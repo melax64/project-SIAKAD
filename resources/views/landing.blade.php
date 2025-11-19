@@ -28,7 +28,7 @@
         <!-- Role Selection Cards -->
         <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <!-- Admin Card -->
-            <a href="{{ route('login', ['role' => 'admin']) }}" 
+            <a href="" 
                class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="bg-blue-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i data-lucide="shield" class="w-8 h-8 text-blue-600"></i>
@@ -40,7 +40,7 @@
             </a>
 
             <!-- Mahasiswa Card -->
-            <a href="{{ route('login', ['role' => 'mahasiswa']) }}" 
+            <a href="" 
                class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="bg-green-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i data-lucide="book-open" class="w-8 h-8 text-green-600"></i>
@@ -52,7 +52,7 @@
             </a>
 
             <!-- Dosen Card -->
-            <a href="{{ route('login', ['role' => 'dosen']) }}" 
+            <a href="" 
                class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="bg-indigo-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i data-lucide="users" class="w-8 h-8 text-indigo-600"></i>
