@@ -18,10 +18,10 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div class="text-center mb-16">
             <h1 class="text-5xl font-bold text-blue-900 mb-4">
-                INI PPUNYA FATHUUURRRRRRRRRRRRRRRRRRRRR
+                SELAMAT DATANG DI SIAKAD
             </h1>
             <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                maila imut
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi in ad reiciendis modi neque minima natus, ipsum quisquam. Sapiente doloremque obcaecati non aliquam eveniet? Magnam aliquam sapiente ipsum repudiandae veritatis.
             </p>
         </div>
 
