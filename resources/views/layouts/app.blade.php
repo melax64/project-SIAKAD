@@ -14,6 +14,36 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
+
+    <script>
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    // Load saved mode
+    if (localStorage.theme === 'dark' || 
+       (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        html.classList.add('dark');
+        themeToggleBtn.textContent = '☀️';
+    } else {
+        html.classList.remove('dark');
+        themeToggleBtn.textContent = '🌙';
+    }
+
+    // Toggle mode
+    themeToggleBtn.addEventListener('click', () => {
+        if (html.classList.contains('dark')) {
+            html.classList.remove('dark');
+            localStorage.theme = 'light';
+            themeToggleBtn.textContent = '🌙';
+        } else {
+            html.classList.add('dark');
+            localStorage.theme = 'dark';
+            themeToggleBtn.textContent = '☀️';
+        }
+    });
+</script>
+
+
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @include('layouts.navigation')
@@ -29,7 +59,7 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                @yield('content')
             </main>
         </div>
     </body>
