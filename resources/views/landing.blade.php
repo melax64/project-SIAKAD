@@ -55,7 +55,7 @@
             <a href="" 
                class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="bg-indigo-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="users" class="w-8 h-8 text-indigo-600"> <img src="" alt=""></i>
+                    <i data-lucide="users" class="w-8 h-8 text-indigo-600"> <img src="https://www.google.com/imgres?q=icon%20dosen&imgurl=https%3A%2F%2Flookaside.fbsbx.com%2Flookaside%2Fcrawler%2Fmedia%2F%3Fmedia_id%3D100049724234845&imgrefurl=https%3A%2F%2Fwww.facebook.com%2Fdosenid%2F&docid=6y3c3sDyPRTLFM&tbnid=37hweR0LDtW9HM&vet=12ahUKEwiq5MfPs4KRAxWnzTgGHXeKFxgQM3oECCoQAA..i&w=500&h=500&hcb=2&ved=2ahUKEwiq5MfPs4KRAxWnzTgGHXeKFxgQM3oECCoQAA" alt=""></i>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-2 text-center">Login Dosen</h3>
                 <p class="text-gray-600 text-center">
