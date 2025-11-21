@@ -31,7 +31,7 @@
             <a href="" 
                class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="bg-blue-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="shield" class="w-8 h-8 text-blue-600"></i>
+                    <i data-lucide="shield" class="w-8 h-8 text-blue-600"> <img src="" alt=""></i>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-2 text-center">Login Admin</h3>
                 <p class="text-gray-600 text-center">
@@ -43,7 +43,7 @@
             <a href="" 
                class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="bg-green-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="book-open" class="w-8 h-8 text-green-600"></i>
+                    <i data-lucide="book-open" class="w-8 h-8 text-green-600"> <img src="" alt=""></i>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-2 text-center">Login Mahasiswa</h3>
                 <p class="text-gray-600 text-center">
@@ -55,7 +55,7 @@
             <a href="" 
                class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="bg-indigo-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="users" class="w-8 h-8 text-indigo-600"></i>
+                    <i data-lucide="users" class="w-8 h-8 text-indigo-600"> <img src="" alt=""></i>
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 mb-2 text-center">Login Dosen</h3>
                 <p class="text-gray-600 text-center">
