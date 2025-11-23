@@ -4,15 +4,6 @@
 
 @section('content')
 <div class="min-h-screen bg-linear-to-br from-blue-50 to-indigo-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex items-center gap-3">
-                <i data-lucide="graduation-cap" class="w-8 h-8 text-blue-600"></i>
-                <span class="text-xl font-semibold text-blue-900">SIAKAD Universitas</span>
-            </div>
-        </div>
-    </header>
 
     <!-- Hero Section -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
