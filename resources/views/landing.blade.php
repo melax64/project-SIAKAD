@@ -8,10 +8,10 @@
       <!-- Hero Section -->
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
          <div class="text-center mb-16">
-            <h1 class="text-5xl font-bold text-blue-900 mb-4">
+            <h1 class="text-5xl font-bold text-blue-900 dark:text-gray-100 mb-4">
                 SELAMAT DATANG DI SIAKAD
             </h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi in ad reiciendis modi neque minima natus, ipsum quisquam. Sapiente doloremque obcaecati non aliquam eveniet? Magnam aliquam sapiente ipsum repudiandae veritatis.
             </p>
          </div>
@@ -19,20 +19,20 @@
          <!-- Role Selection Cards -->
          <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <!-- Admin Card -->
-            <a href=""
+            <a href="{{ route('login.admin') }}"
                class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i data-lucide="shield" class="w-8 h-8 text-blue-600"></i>
                     <img src="{{ asset('images/admin.png') }}" alt="Logo Admin">
                 </div>
-                <h3 class="text-xl font-semibold text-gray-100 mb-2 text-center">Login Admin</h3>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 text-center">Login Admin</h3>
                 <p class="text-gray-400 text-center">
                     Kelola data mahasiswa, dosen, dan jadwal akademik
                 </p>
             </a>
 
             <!-- Mahasiswa Card -->
-            <a href=""
+            <a href="{{ route('login.mahasiswa') }}"
                class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i data-lucide="book-open" class="w-8 h-8 text-green-600"></i>
@@ -45,13 +45,13 @@
             </a>
 
             <!-- Dosen Card -->
-            <a href=""
+            <a href="{{ route('login.dosen') }}"
                class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                 <div class="w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <i data-lucide="users" class="w-8 h-8 text-indigo-600"></i>
                     <img src="{{ asset('images/dosen.png') }}" alt="Logo Dosen">
                 </div>
-                <h3 class="text-xl font-semibold text-gray-100 mb-2 text-center">Login Dosen</h3>
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 text-center">Login Dosen</h3>
                 <p class="text-gray-400 text-center">
                     Kelola jadwal mengajar dan input nilai mahasiswa
                 </p>
@@ -60,9 +60,9 @@
       </main>
 
       <!-- Footer -->
-      <footer class="bg-white mt-20 border-t border-gray-200">
+      <footer class="bg-white mt-20 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <p class="text-center text-gray-600">
+            <p class="text-center text-gray-400">
                © 2025 SIAKAD Universitas. All rights reserved.
             </p>
          </div>

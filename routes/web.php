@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\LoginController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,5 +21,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/login/admin', [LoginController::class, 'adminLogin'])->name('login.admin');
+Route::get('/login/dosen', [LoginController::class, 'dosenLogin'])->name('login.dosen');
+Route::get('/login/mahasiswa', [LoginController::class, 'mahasiswaLogin'])->name('login.mahasiswa');
 
 require __DIR__.'/auth.php';
