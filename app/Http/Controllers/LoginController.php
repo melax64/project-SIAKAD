@@ -4,18 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function adminLogin() {
+    public function showAdminLogin()
+    {
         return view('auth.login-admin');
     }
 
-    public function dosenLogin() {
-        return view('auth.login-dosen');
+    public function showMahasiswaLogin()
+    {
+        return view('auth.login-mahasiswa'); // ganti sesuai path view-mu
     }
 
-    public function mahasiswaLogin() {
-        return view('auth.login-mahasiswa');
+    public function showDosenLogin()
+    {
+        return view('auth.login-dosen'); // ganti sesuai path view-mu
+    }
+
+    public function adminLogin(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        // Login admin pakai default user dulu
+        if (Auth::attempt($credentials)) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return back()->withErrors([
+            'email' => 'Email atau password salah!',
+        ]);
     }
 }

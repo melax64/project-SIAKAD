@@ -22,8 +22,20 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/login/admin', [LoginController::class, 'adminLogin'])->name('login.admin');
-Route::get('/login/dosen', [LoginController::class, 'dosenLogin'])->name('login.dosen');
-Route::get('/login/mahasiswa', [LoginController::class, 'mahasiswaLogin'])->name('login.mahasiswa');
+Route::get('/login/admin', [LoginController::class, 'showAdminLogin'])->name('login.admin');
+Route::get('/login/dosen', [LoginController::class, 'showDosenLogin'])->name('login.dosen');
+Route::get('/login/mahasiswa', [LoginController::class, 'showMahasiswaLogin'])->name('login.mahasiswa');
+
+// Login Admin
+Route::get('/login/admin', [LoginController::class, 'showAdminLogin'])->name('login.admin');
+Route::post('/login/admin', [LoginController::class, 'adminLogin']);
+
+// Login Dosen
+Route::get('/login/dosen', [LoginController::class, 'showDosenLogin'])->name('login.dosen');
+Route::post('/login/dosen', [LoginController::class, 'dosenLogin']);
+
+// Login Mahasiswa
+Route::get('/login/mahasiswa', [LoginController::class, 'showMahasiswaLogin'])->name('login.mahasiswa');
+Route::post('/login/mahasiswa', [LoginController::class, 'mahasiswaLogin']);
 
 require __DIR__.'/auth.php';

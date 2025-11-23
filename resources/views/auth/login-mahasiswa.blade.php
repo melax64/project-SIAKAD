@@ -5,14 +5,14 @@
     <div class="w-full max-w-md">
 
         <!-- Login Card -->
-        <div class="bg-white rounded-[28px] shadow-2xl p-10">
+        <div class="bg-white dark:bg-gray-800 rounded-[28px] shadow-2xl p-10">
 
             <!-- Logo & Icon -->
             <div class="flex flex-col items-center mb-8">
                 <img src="{{ asset('images/mahasiswa.png') }}" class="w-14 h-14" alt="Logo">
 
                 <div class="text-center">
-                    <h1 class="text-[#0b1a34] mb-2">Login Mahasiswa</h1>
+                    <h1 class="text-[#0b1a34] dark:text-[#FFFF] mb-2">Login Mahasiswa</h1>
                     <p class="text-gray-500">Sistem Informasi Akademik</p>
                 </div>
             </div>
@@ -23,7 +23,7 @@
 
                 {{-- Email Input --}}
                 <div>
-                    <label for="email" class="block text-gray-700 mb-2">Email</label>
+                    <label for="email" class="block text-gray-700 dark:text-[#FFFF] mb-2">Email</label>
                     <div class="relative">
                         {{-- Mail Icon --}}
                         <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,7 +36,7 @@
                             type="email"
                             name="email"
                             class="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:outline-none
-                                   focus:ring-2 focus:ring-[#2563EB] bg-gray-50 hover:bg-white transition-all"
+                                   focus:ring-2 focus:ring-[#2563EB] bg-gray-50 dark:bg-gray-100 hover:bg-white transition-all"
                             placeholder="mahasiswa@student.university.ac.id"
                             required
                             autofocus
@@ -46,7 +46,7 @@
 
                 {{-- Password Input --}}
                 <div>
-                    <label for="password" class="block text-gray-700 mb-2">Password</label>
+                    <label for="password" class="block text-gray-700 dark:text-[#FFFF] mb-2">Password</label>
                     <div class="relative">
                         {{-- Lock Icon --}}
                         <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,7 +60,7 @@
                             type="password"
                             name="password"
                             class="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl focus:outline-none
-                                   focus:ring-2 focus:ring-[#2563EB] bg-gray-50 hover:bg-white transition-all"
+                                   focus:ring-2 focus:ring-[#2563EB] bg-gray-50 dark:bg-gray-100 hover:bg-white transition-all"
                             placeholder="••••••••"
                             required
                         />
