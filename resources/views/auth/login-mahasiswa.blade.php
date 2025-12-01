@@ -18,7 +18,7 @@
             </div>
 
             {{-- Form --}}
-            <form action="{{ route('login.mahasiswa') }}" method="POST" class="space-y-5">
+            <form action="{{ route('login.mahasiswa.post') }}" method="POST" class="space-y-5">
                 @csrf
 
                 {{-- Email Input --}}

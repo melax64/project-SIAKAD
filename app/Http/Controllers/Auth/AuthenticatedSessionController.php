@@ -25,9 +25,24 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
+        // ✅ Tambahkan logika redirect berdasarkan role
+        $user = Auth::user();
+
+        if ($user->role === 'mahasiswa') {
+            return redirect()->route('mahasiswa.dashboard');
+        }
+
+        if ($user->role === 'dosen') {
+            return redirect()->route('dosen.dashboard');
+        }
+
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
+        // default fallback
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
@@ -39,7 +54,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
