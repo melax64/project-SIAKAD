@@ -12,7 +12,8 @@
                 SELAMAT DATANG DI SIAKAD
             </h1>
             <p class="text-lg text-gray-400 max-w-2xl mx-auto">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi in ad reiciendis modi neque minima natus, ipsum quisquam. Sapiente doloremque obcaecati non aliquam eveniet? Magnam aliquam sapiente ipsum repudiandae veritatis.
+                Sistem Informasi Akademik (SIAKAD) Universitas menyediakan akses mudah dan cepat bagi
+                mahasiswa, dosen, dan admin untuk mengelola data akademik secara efisien.
             </p>
          </div>
 
@@ -27,7 +28,7 @@
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 text-center">Login Admin</h3>
                 <p class="text-gray-400 text-center">
-                    Kelola data mahasiswa, dosen, dan jadwal akademik
+                    Kelola data mahasiswa dan dosen
                 </p>
             </a>
 
@@ -40,7 +41,7 @@
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 text-center">Login Mahasiswa</h3>
                 <p class="text-gray-400 text-center">
-                    Akses jadwal, isi KRS, dan lihat nilai akademik
+                    Akses KRS, nilai, dan data diri
                 </p>
             </a>
 
@@ -53,7 +54,7 @@
                 </div>
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 text-center">Login Dosen</h3>
                 <p class="text-gray-400 text-center">
-                    Kelola jadwal mengajar dan input nilai mahasiswa
+                    Kelola input nilai mahasiswa dan data diri
                 </p>
             </a>
          </div>
