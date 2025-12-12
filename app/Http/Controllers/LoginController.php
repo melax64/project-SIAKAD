@@ -54,7 +54,7 @@ class LoginController extends Controller
             'email' => 'Email atau password salah!',
         ]);
     }
-    
+
 
     // 2. LOGIN DOSEN
     public function dosenLogin(Request $request)
@@ -67,8 +67,10 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            // CEK ROLE: Harus 'dosen'
             if (Auth::user()->role === 'dosen') {
-                return redirect()->route('dosen.dashboard'); // Pastikan route ini ada
+                // Arahkan ke Route Dashboard Dosen yang baru kita buat
+                return redirect()->route('dosen.dashboard');
             }
 
             Auth::logout();

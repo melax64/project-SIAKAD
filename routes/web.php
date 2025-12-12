@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Dosen\DosenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,12 +28,12 @@ Route::get('/login/mahasiswa', [LoginController::class, 'showMahasiswaLogin'])->
 Route::post('/login/mahasiswa', [LoginController::class, 'mahasiswaLogin'])->name('login.mahasiswa.post');
 
 
-// 3. ROUTE UMUM (Redirect Dashboard)
+// 3. ROUTE UMUM (Redirect Dashboard saat login pertama kali)
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
-        if (Auth::user()->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        }
+        $role = Auth::user()->role;
+        if ($role === 'admin') return redirect()->route('admin.dashboard');
+        if ($role === 'dosen') return redirect()->route('dosen.dashboard'); // <--- Tambahan Dosen
         return redirect()->route('mahasiswa.dashboard');
     })->name('dashboard');
 
@@ -42,103 +43,88 @@ Route::middleware('auth')->group(function () {
 });
 
 
-// 4. GROUP ROUTE ADMIN
+// =========================================================================
+// 4. GROUP ROUTE ADMIN (Mulai dari sini)
+// =========================================================================
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
-    
-    // --- DASHBOARD ---
-    Route::get('/dashboard', function () {
-        // Kita hanya siapkan 3 menu utama
-        $menuItems = [
-            [
-                'label' => 'Dashboard',
-                'route' => 'admin.dashboard',
-                'icon' => 'layout-dashboard',
-                'id' => 'dashboard'
-            ],
-            [
-                'label' => 'Mahasiswa',
-                'route' => 'admin.mahasiswa',
-                'icon' => 'users',
-                'id' => 'mahasiswa'
-            ],
-            [
-                'label' => 'Dosen',
-                'route' => 'admin.dosen',
-                'icon' => 'graduation-cap',
-                'id' => 'dosen'
-            ],
-        ];
 
-        return view('admin.dashboard', [
-            'menuItems' => $menuItems,
-            'activePage' => 'dashboard'
-        ]);
+    // Dashboard Admin
+    Route::get('/dashboard', function () {
+        $menuItems = [
+            ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'icon' => 'layout-dashboard', 'id' => 'dashboard'],
+            ['label' => 'Mahasiswa', 'route' => 'admin.mahasiswa', 'icon' => 'users', 'id' => 'mahasiswa'],
+            ['label' => 'Dosen', 'route' => 'admin.dosen', 'icon' => 'graduation-cap', 'id' => 'dosen'],
+        ];
+        return view('admin.dashboard', ['menuItems' => $menuItems, 'activePage' => 'dashboard']);
     })->name('admin.dashboard');
 
-    // ==========================================================
-    // RUTE PENYELAMAT (Agar error Route Not Defined hilang)
-    // ==========================================================
-    
-    // ==========================================================
-    // RUTE DATA UTAMA (Link Sidebar akan mengarah ke sini)
-    // ==========================================================
-    
-    // 1. Link Data Mahasiswa -> Menampilkan Tabel
+    // Link Sidebar Admin
     Route::get('/mahasiswa', [UserController::class, 'indexMahasiswa'])->name('admin.mahasiswa');
-
-    // 2. Link Data Dosen -> Menampilkan Tabel
     Route::get('/dosen', [UserController::class, 'indexDosen'])->name('admin.dosen');
 
-    // ... (Biarkan rute create/store dan dummy matakuliah tetap ada) ...
-    
-    // 3. Dummy Matakuliah (Biar gak error)
-    Route::get('/matakuliah-dummy', function() {
-        return "Coming Soon";
-    })->name('admin.matakuliah'); 
-
-    // 4. Dummy JADWAL 
-    Route::get('/jadwal-dummy', function() {
-        return "Coming Soon";
-    })->name('admin.jadwal'); 
-    
-    // 5. Dummy KRS 
-    Route::get('/krs-dummy', function() {
-        return "Coming Soon";
-    })->name('admin.krs'); 
-
-    Route::get('/pengumuman-dummy', function() {
-        return "Coming Soon";
-    })->name('admin.pengumuman');
-
-    Route ::get('/settings-dummy', function() {
-        return "Coming Soon";
-    })->name('admin.settings');
-    // ==========================================================
-
-
-    // --- LOGIC INPUT DATA ---
+    // Create & Store
     Route::get('/mahasiswa/create', [UserController::class, 'createMahasiswa'])->name('admin.mahasiswa.create');
     Route::post('/mahasiswa', [UserController::class, 'storeMahasiswa'])->name('admin.mahasiswa.store');
-
     Route::get('/dosen/create', [UserController::class, 'createDosen'])->name('admin.dosen.create');
     Route::post('/dosen', [UserController::class, 'storeDosen'])->name('admin.dosen.store');
+
+    // Dummy Routes (Penyelamat)
+    Route::get('/matakuliah-dummy', fn() => 'Coming Soon')->name('admin.matakuliah');
+    Route::get('/jadwal-dummy', fn() => 'Coming Soon')->name('admin.jadwal');
+    Route::get('/krs-dummy', fn() => 'Coming Soon')->name('admin.krs');
+    Route::get('/nilai-dummy', fn() => 'Coming Soon')->name('admin.nilai');
+});
+// <--- PENTING: TUTUP KURUNG ADMIN HARUS DI SINI! (Jangan sampai Dosen masuk ke dalam Admin)
+
+
+// =========================================================================
+// 5. GROUP ROUTE DOSEN (Harus Terpisah dari Admin)
+// =========================================================================
+Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
+
+    // Dashboard Dosen
+    Route::get('/dashboard', function () {
+        $menuItems = [
+            ['label' => 'Dashboard', 'route' => 'dosen.dashboard', 'icon' => 'layout-dashboard', 'id' => 'dashboard'],
+            ['label' => 'Jadwal Mengajar', 'route' => 'dosen.jadwal', 'icon' => 'calendar', 'id' => 'jadwal'],
+            ['label' => 'Input Nilai', 'route' => 'dosen.nilai', 'icon' => 'file-text', 'id' => 'nilai'],
+        ];
+        // Pastikan view ini ada!
+        return view('dosen.dashboard', [
+            'user' => Auth::user(),
+            'menuItems' => $menuItems,
+            'activePage' => 'dashboard',
+            'userName' => Auth::user()->name,
+            'userRole' => 'Dosen'
+        ]);
+    })->name('dosen.dashboard');
+
+    // Dummy Routes Dosen
+    Route::get('/jadwal', fn() => 'Halaman Jadwal')->name('dosen.jadwal');
+    Route::get('/nilai', [DosenController::class, 'showNilai'])->name('dosen.nilai');
+    Route::post('/nilai', [DosenController::class, 'storeNilai'])->name('dosen.nilai.store');
+    Route::delete('/nilai/{id}', [DosenController::class, 'deleteNilai'])->name('dosen.nilai.delete');
+    Route::get('/bimbingan', fn() => 'Halaman Bimbingan')->name('dosen.bimbingan');
+    Route::get('/kelas', fn() => 'Halaman Daftar Kelas')->name('dosen.kelas');
+    Route::get('/pengumuman', fn() => 'Halaman Pengumuman')->name('dosen.pengumuman');
+    Route::get('/profil', [DosenController::class, 'showProfil'])->name('dosen.profil');
+    Route::put('/profil', [DosenController::class, 'updateProfil'])->name('dosen.profil.update');
 });
 
 
-// 5. GROUP ROUTE MAHASISWA
+// =========================================================================
+// 6. GROUP ROUTE MAHASISWA
+// =========================================================================
 Route::prefix('mahasiswa')->middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('mahasiswa.dashboard', [
-            'mahasiswa' => Auth::user(),
-            'activePage' => 'dashboard'
-        ]);
+        return view('mahasiswa.dashboard', ['mahasiswa' => Auth::user(), 'activePage' => 'dashboard']);
     })->name('mahasiswa.dashboard');
 
     Route::get('/krs', fn() => 'Halaman KRS')->name('mahasiswa.krs');
     Route::get('/jadwal', fn() => 'Halaman Jadwal')->name('mahasiswa.jadwal');
     Route::get('/nilai', fn() => 'Halaman Nilai')->name('mahasiswa.nilai');
     Route::get('/pengumuman', fn() => 'Halaman Pengumuman')->name('mahasiswa.pengumuman');
-    Route::get('/profil-akademik', fn() => 'Halaman Profil Akademik')->name('mahasiswa.profil.akademik');
+    Route::get('/profil-akademik', fn() => 'Halaman Profil')->name('mahasiswa.profil.akademik');
 });
 
 require __DIR__ . '/auth.php';

@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            AdminSeeder::class, // Pastikan baris ini ada!
+            AdminSeeder::class,
+            DosenSeeder::class,
         ]);
     }
     // public function run(): void

@@ -66,6 +66,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'nip' => 'required|string|unique:dosens,nip',
+            'jabatan' => 'required|string',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -82,7 +83,7 @@ class UserController extends Controller
             Dosen::create([
                 'user_id' => $user->id,
                 'nip' => $request->nip,
-                'jabatan' => 'Dosen Tetap', // Contoh default
+                'jabatan' => $request->jabatan,
             ]);
         });
 
@@ -95,7 +96,7 @@ class UserController extends Controller
     {
         // Ambil semua data mahasiswa gabung dengan data user-nya (nama & email)
         $mahasiswas = \App\Models\Mahasiswa::with('user')->get();
-        
+
         // Kirim data ke view index
         return view('admin.mahasiswa.index', compact('mahasiswas'));
     }
@@ -107,5 +108,4 @@ class UserController extends Controller
 
         return view('admin.dosen.index', compact('dosens'));
     }
-    
 }
