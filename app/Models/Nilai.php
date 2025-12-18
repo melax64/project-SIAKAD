@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Nilai extends Model
 {
-    protected $fillable = ['dosen_id', 'mahasiswa_id', 'kehadiran', 'tugas', 'uts', 'uas', 'catatan'];
+    protected $fillable = ['dosen_id', 'mahasiswa_id', 'mata_kuliah', 'tipe_kelas', 'sks', 'kehadiran', 'tugas', 'uts', 'uas', 'catatan'];
 
     public function dosen()
     {

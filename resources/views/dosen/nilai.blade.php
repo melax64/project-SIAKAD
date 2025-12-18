@@ -76,6 +76,51 @@
                 <div id="nilai-section" class="hidden space-y-6 pt-4 border-t border-gray-200 dark:border-slate-700">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Input Nilai</h3>
 
+                    <!-- Hidden mahasiswa_id -->
+                    <input type="hidden" id="mahasiswa-id" name="mahasiswa_id">
+
+                    <!-- Mata Kuliah dan Tipe Kelas -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <!-- Nama Mata Kuliah -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama Mata Kuliah
+                                <span class="text-red-500">*</span></label>
+                            <input type="text" name="mata_kuliah"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                placeholder="Contoh: Pemrograman Web" required>
+                        </div>
+
+                        <!-- Tipe Kelas -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipe Kelas <span
+                                    class="text-red-500">*</span></label>
+                            <select name="tipe_kelas"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                required>
+                                <option value="">-- Pilih Tipe Kelas --</option>
+                                <option value="teori">Teori</option>
+                                <option value="praktikum">Praktikum</option>
+                            </select>
+                        </div>
+
+                        <!-- SKS -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">SKS <span
+                                    class="text-red-500">*</span></label>
+                            <select name="sks"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                required>
+                                <option value="">-- Pilih SKS --</option>
+                                <option value="1">1 SKS</option>
+                                <option value="2">2 SKS</option>
+                                <option value="3" selected>3 SKS</option>
+                                <option value="4">4 SKS</option>
+                                <option value="6">6 SKS</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Input Nilai -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <!-- Kehadiran -->
                         <div>
@@ -154,6 +199,12 @@
                                     Nama Mahasiswa</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">
+                                    Mata Kuliah</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">
+                                    Tipe</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">
                                     Kehadiran</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">
@@ -176,6 +227,14 @@
                                         {{ $nilai->mahasiswa->nim ?? '-' }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
                                         {{ $nilai->mahasiswa->user->name ?? '-' }}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                                        {{ $nilai->mata_kuliah ?? '-' }}</td>
+                                    <td class="px-6 py-4 text-sm">
+                                        <span
+                                            class="px-3 py-1 rounded-full text-xs font-medium {{ $nilai->tipe_kelas === 'teori' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' : 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300' }}">
+                                            {{ $nilai->tipe_kelas === 'teori' ? 'Teori' : 'Praktikum' }}
+                                        </span>
+                                    </td>
                                     <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
                                         {{ $nilai->kehadiran ?? '-' }}%</td>
                                     <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">{{ $nilai->tugas ?? '-' }}
@@ -207,19 +266,31 @@
     <!-- Script untuk mencari mahasiswa -->
     <script>
         document.getElementById('search-btn').addEventListener('click', async () => {
-            const nim = document.getElementById('nim-input').value;
+            const nim = document.getElementById('nim-input').value.trim();
             if (!nim) {
                 alert('Masukkan NIM terlebih dahulu');
                 return;
             }
 
             try {
-                const response = await fetch(`/api/mahasiswa/${nim}`);
+                const response = await fetch(`/dosen/api/search-mahasiswa/${nim}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const data = await response.json();
 
                 if (data.success) {
                     document.getElementById('mahasiswa-name').textContent = data.mahasiswa.user.name;
                     document.getElementById('mahasiswa-nim').textContent = data.mahasiswa.nim;
+                    document.getElementById('mahasiswa-id').value = data.mahasiswa.id;
                     document.getElementById('mahasiswa-info').classList.remove('hidden');
                     document.getElementById('nilai-section').classList.remove('hidden');
                 } else {
@@ -229,11 +300,11 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Terjadi kesalahan saat mencari mahasiswa');
+                alert('Terjadi kesalahan saat mencari mahasiswa: ' + error.message);
+                document.getElementById('mahasiswa-info').classList.add('hidden');
+                document.getElementById('nilai-section').classList.add('hidden');
             }
-        });
-
-        // Trigger search dengan Enter key
+        }); // Trigger search dengan Enter key
         document.getElementById('nim-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();

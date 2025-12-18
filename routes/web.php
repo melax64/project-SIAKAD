@@ -7,6 +7,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Dosen\DosenController;
+use App\Http\Controllers\Mahasiswa\MahasiswaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,13 +90,14 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
             ['label' => 'Jadwal Mengajar', 'route' => 'dosen.jadwal', 'icon' => 'calendar', 'id' => 'jadwal'],
             ['label' => 'Input Nilai', 'route' => 'dosen.nilai', 'icon' => 'file-text', 'id' => 'nilai'],
         ];
+
         // Pastikan view ini ada!
         return view('dosen.dashboard', [
             'user' => Auth::user(),
             'menuItems' => $menuItems,
             'activePage' => 'dashboard',
             'userName' => Auth::user()->name,
-            'userRole' => 'Dosen'
+            'userRole' => 'Dosen',
         ]);
     })->name('dosen.dashboard');
 
@@ -103,12 +105,30 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('/jadwal', fn() => 'Halaman Jadwal')->name('dosen.jadwal');
     Route::get('/nilai', [DosenController::class, 'showNilai'])->name('dosen.nilai');
     Route::post('/nilai', [DosenController::class, 'storeNilai'])->name('dosen.nilai.store');
+    Route::get('/nilai/{id}/edit', [DosenController::class, 'editNilai'])->name('dosen.nilai.edit');
+    Route::put('/nilai/{id}', [DosenController::class, 'updateNilai'])->name('dosen.nilai.update');
     Route::delete('/nilai/{id}', [DosenController::class, 'deleteNilai'])->name('dosen.nilai.delete');
     Route::get('/bimbingan', fn() => 'Halaman Bimbingan')->name('dosen.bimbingan');
     Route::get('/kelas', fn() => 'Halaman Daftar Kelas')->name('dosen.kelas');
-    Route::get('/pengumuman', fn() => 'Halaman Pengumuman')->name('dosen.pengumuman');
     Route::get('/profil', [DosenController::class, 'showProfil'])->name('dosen.profil');
     Route::put('/profil', [DosenController::class, 'updateProfil'])->name('dosen.profil.update');
+
+    // API untuk search mahasiswa (AJAX)
+    Route::get('/api/search-mahasiswa/{nim}', function ($nim) {
+        $mahasiswa = \App\Models\Mahasiswa::where('nim', $nim)->with('user')->first();
+
+        if (!$mahasiswa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mahasiswa dengan NIM ' . $nim . ' tidak ditemukan'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'mahasiswa' => $mahasiswa
+        ]);
+    })->name('dosen.api.search-mahasiswa');
 });
 
 
@@ -117,14 +137,21 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
 // =========================================================================
 Route::prefix('mahasiswa')->middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('mahasiswa.dashboard', ['mahasiswa' => Auth::user(), 'activePage' => 'dashboard']);
+        $user = Auth::user();
+        $mahasiswa = \App\Models\Mahasiswa::where('user_id', $user->id)->first();
+
+        return view('mahasiswa.dashboard', [
+            'mahasiswa' => $mahasiswa,
+            'activePage' => 'dashboard',
+        ]);
     })->name('mahasiswa.dashboard');
 
     Route::get('/krs', fn() => 'Halaman KRS')->name('mahasiswa.krs');
     Route::get('/jadwal', fn() => 'Halaman Jadwal')->name('mahasiswa.jadwal');
-    Route::get('/nilai', fn() => 'Halaman Nilai')->name('mahasiswa.nilai');
-    Route::get('/pengumuman', fn() => 'Halaman Pengumuman')->name('mahasiswa.pengumuman');
-    Route::get('/profil-akademik', fn() => 'Halaman Profil')->name('mahasiswa.profil.akademik');
+    Route::get('/nilai', [MahasiswaController::class, 'showNilai'])->name('mahasiswa.nilai');
+    Route::get('/profil', [MahasiswaController::class, 'showProfil'])->name('mahasiswa.profil');
+    Route::get('/profil/edit', [MahasiswaController::class, 'editProfil'])->name('mahasiswa.profil.edit');
+    Route::put('/profil', [MahasiswaController::class, 'updateProfil'])->name('mahasiswa.profil.update');
 });
 
 require __DIR__ . '/auth.php';

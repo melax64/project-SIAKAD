@@ -128,6 +128,57 @@ class DosenController extends Controller
         return back()->with('success', $message);
     }
 
+    public function editNilai($id)
+    {
+        $user = Auth::user();
+        $dosen = Dosen::where('user_id', $user->id)->first();
+
+        $nilai = Nilai::where('id', $id)
+            ->where('dosen_id', $dosen->id)
+            ->with(['mahasiswa.user'])
+            ->firstOrFail();
+
+        $nilaiList = Nilai::where('dosen_id', $dosen->id)
+            ->with(['mahasiswa.user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('dosen.nilai-edit', [
+            'nilai' => $nilai,
+            'nilaiList' => $nilaiList
+        ]);
+    }
+
+    public function updateNilai(Request $request, $id)
+    {
+        $user = Auth::user();
+        $dosen = Dosen::where('user_id', $user->id)->first();
+
+        $nilai = Nilai::where('id', $id)
+            ->where('dosen_id', $dosen->id)
+            ->firstOrFail();
+
+        // Validasi
+        $validated = $request->validate([
+            'kehadiran' => 'nullable|numeric|min:0|max:100',
+            'tugas' => 'nullable|numeric|min:0|max:100',
+            'uts' => 'nullable|numeric|min:0|max:100',
+            'uas' => 'nullable|numeric|min:0|max:100',
+            'catatan' => 'nullable|string',
+        ]);
+
+        // Update nilai
+        $nilai->update([
+            'kehadiran' => $validated['kehadiran'] ?? $nilai->kehadiran,
+            'tugas' => $validated['tugas'] ?? $nilai->tugas,
+            'uts' => $validated['uts'] ?? $nilai->uts,
+            'uas' => $validated['uas'] ?? $nilai->uas,
+            'catatan' => $validated['catatan'] ?? $nilai->catatan,
+        ]);
+
+        return redirect()->route('dosen.nilai')->with('success', 'Nilai berhasil diperbarui!');
+    }
+
     public function deleteNilai($id)
     {
         $user = Auth::user();

@@ -4,7 +4,8 @@
 
 @section('main-content')
     <div class="space-y-6">
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 flex justify-between items-center">
+        <div
+            class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 flex justify-between items-center">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Selamat Datang, {{ Auth::user()->name }}!</h1>
                 <p class="text-gray-600 mt-1">
@@ -76,4 +77,8 @@
             </div>
         </div>
     </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
 @endsection

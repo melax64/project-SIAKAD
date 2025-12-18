@@ -36,12 +36,6 @@
                         'icon' => 'users',
                         'route' => 'dosen.kelas',
                     ],
-                    [
-                        'id' => 'pengumuman',
-                        'label' => 'Pengumuman',
-                        'icon' => 'megaphone',
-                        'route' => 'dosen.pengumuman',
-                    ],
                     ['id' => 'profil', 'label' => 'Profil', 'icon' => 'user', 'route' => 'dosen.profil'],
                 ],
                 'activePage' => $activePage ?? 'dashboard',

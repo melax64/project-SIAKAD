@@ -27,6 +27,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'nim' => 'required|string|unique:mahasiswas,nim',
             'prodi' => 'required|string',
+            'angkatan' => 'required|numeric|min:2000|max:' . date('Y'),
         ]);
 
         // Gunakan Transaction agar jika salah satu gagal, semua dibatalkan
@@ -46,7 +47,7 @@ class UserController extends Controller
                 'user_id' => $user->id, // Relasi ke tabel user
                 'nim' => $request->nim,
                 'prodi' => $request->prodi,
-                'angkatan' => date('Y'), // contoh default tahun sekarang
+                'angkatan' => $request->angkatan,
             ]);
         });
 

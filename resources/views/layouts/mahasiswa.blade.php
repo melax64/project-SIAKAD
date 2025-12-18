@@ -1,10 +1,10 @@
 @extends('layouts.base')
 
 @section('content')
-    <div x-data="{ sidebarOpen: true }" class="min-h-screen bg-slate-50">
+    <div x-data="{ sidebarOpen: true }" class="min-h-screen bg-gray-100 dark:bg-slate-950">
         <!-- Header -->
         @include('components.header', [
-            'userName' => $userName ?? 'Budi Santoso',
+            'userName' => Auth::user()->name ?? 'Mahasiswa',
             'userRole' => 'Mahasiswa',
         ])
 
@@ -26,12 +26,6 @@
                         'route' => 'mahasiswa.jadwal',
                     ],
                     ['id' => 'nilai', 'label' => 'Nilai', 'icon' => 'award', 'route' => 'mahasiswa.nilai'],
-                    [
-                        'id' => 'pengumuman',
-                        'label' => 'Pengumuman',
-                        'icon' => 'megaphone',
-                        'route' => 'mahasiswa.pengumuman',
-                    ],
                     ['id' => 'profil', 'label' => 'Profil', 'icon' => 'user', 'route' => 'mahasiswa.profil'],
                 ],
                 'activePage' => $activePage ?? 'dashboard',
