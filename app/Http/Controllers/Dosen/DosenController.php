@@ -38,19 +38,15 @@ class DosenController extends Controller
         ]);
 
         // Update user data
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-
-        if (!empty($validated['password'])) {
-            $user->password = Hash::make($validated['password']);
-        }
-
-        $user->save();
+        User::where('id', $user->id)->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => !empty($validated['password']) ? Hash::make($validated['password']) : $user->password,
+        ]);
 
         // Update dosen data
         if ($dosen && !empty($validated['jabatan'])) {
-            $dosen->jabatan = $validated['jabatan'];
-            $dosen->save();
+            $dosen->update(['jabatan' => $validated['jabatan']]);
         }
 
         return redirect()->route('dosen.profil')->with('success', 'Profil berhasil diperbarui!');
