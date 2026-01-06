@@ -124,9 +124,9 @@ class UserController extends Controller
 
     public function indexDosen()
     {
-        // Ambil semua data dosen gabung dengan data user-nya
-        $dosens = \App\Models\Dosen::with('user')->get();
+        // Ambil semua data dosen gabung dengan data user-nya dan mata kuliah yang diampu
+        $dosens = \App\Models\Dosen::with('user', 'mataKuliah.mataKuliah')->get();
 
-        return view('admin.dosen.index', compact('dosens'));
+        return view('admin.dosen.index', compact('dosens'), ['activePage' => 'data-dosen']);
     }
 }

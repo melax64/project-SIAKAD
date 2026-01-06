@@ -21,6 +21,7 @@
                     <th class="px-6 py-3">NIP</th>
                     <th class="px-6 py-3">Jabatan</th>
                     <th class="px-6 py-3">Email</th>
+                    <th class="px-6 py-3">Mata Kuliah yang Diampu</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,6 +37,19 @@
                         </span>
                     </td>
                     <td class="px-6 py-4">{{ $dsn->user->email ?? '-' }}</td>
+                    <td class="px-6 py-4">
+                        @if($dsn->mataKuliah && count($dsn->mataKuliah) > 0)
+                            <div class="flex flex-wrap gap-1">
+                                @foreach($dsn->mataKuliah as $mk)
+                                    <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                        {{ $mk->mataKuliah->nama_mk ?? '-' }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        @else
+                            <span class="text-gray-400">-</span>
+                        @endif
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
