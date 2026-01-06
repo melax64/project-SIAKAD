@@ -24,7 +24,7 @@ class DosenSeeder extends Seeder
             [
                 'name' => 'Prof. Siti Nurhaliza, Ph.D',
                 'email' => 'siti.nurhaliza@siakad.com',
-                'nip' => '197203201993122001',
+                'nip' => '111',
                 'jabatan' => 'Dosen Tetap',
                 'mataKuliah' => ['Database Design', 'Advanced Database'],
             ],

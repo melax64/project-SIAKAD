@@ -13,49 +13,69 @@ class KelasSeeder extends Seeder
     public function run(): void
     {
         $kelas_data = [
-            // Informatika Angkatan 2025
-            ['nama_kelas' => 'A1', 'prodi' => 'Informatika', 'angkatan' => 2025, 'kapasitas' => 40],
-            ['nama_kelas' => 'A2', 'prodi' => 'Informatika', 'angkatan' => 2025, 'kapasitas' => 40],
-            ['nama_kelas' => 'B1', 'prodi' => 'Informatika', 'angkatan' => 2025, 'kapasitas' => 40],
-            ['nama_kelas' => 'B2', 'prodi' => 'Informatika', 'angkatan' => 2025, 'kapasitas' => 40],
+            // Teknik Informatika Angkatan 2025
+            ['nama_kelas' => 'A', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kapasitas' => 40],
+            ['nama_kelas' => 'D', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kapasitas' => 40],
 
-            // Informatika Angkatan 2022
-            ['nama_kelas' => 'A1', 'prodi' => 'Informatika', 'angkatan' => 2022, 'kapasitas' => 40],
-            ['nama_kelas' => 'A2', 'prodi' => 'Informatika', 'angkatan' => 2022, 'kapasitas' => 40],
-            ['nama_kelas' => 'B1', 'prodi' => 'Informatika', 'angkatan' => 2022, 'kapasitas' => 40],
-            ['nama_kelas' => 'B2', 'prodi' => 'Informatika', 'angkatan' => 2022, 'kapasitas' => 40],
+            // Teknik Informatika Angkatan 2022
+            ['nama_kelas' => 'A', 'prodi' => 'Teknik Informatika', 'angkatan' => 2022, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknik Informatika', 'angkatan' => 2022, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknik Informatika', 'angkatan' => 2022, 'kapasitas' => 40],
+            ['nama_kelas' => 'D', 'prodi' => 'Teknik Informatika', 'angkatan' => 2022, 'kapasitas' => 40],
 
-            // Informatika Angkatan 2023
-            ['nama_kelas' => 'A1', 'prodi' => 'Informatika', 'angkatan' => 2023, 'kapasitas' => 40],
-            ['nama_kelas' => 'A2', 'prodi' => 'Informatika', 'angkatan' => 2023, 'kapasitas' => 40],
-            ['nama_kelas' => 'B1', 'prodi' => 'Informatika', 'angkatan' => 2023, 'kapasitas' => 40],
-            ['nama_kelas' => 'B2', 'prodi' => 'Informatika', 'angkatan' => 2023, 'kapasitas' => 40],
+            // Teknik Informatika Angkatan 2023
+            ['nama_kelas' => 'A', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kapasitas' => 40],
+            ['nama_kelas' => 'D', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kapasitas' => 40],
 
-            // Informatika Angkatan 2024
-            ['nama_kelas' => 'A1', 'prodi' => 'Informatika', 'angkatan' => 2024, 'kapasitas' => 40],
-            ['nama_kelas' => 'A2', 'prodi' => 'Informatika', 'angkatan' => 2024, 'kapasitas' => 40],
-            ['nama_kelas' => 'B1', 'prodi' => 'Informatika', 'angkatan' => 2024, 'kapasitas' => 40],
-            ['nama_kelas' => 'B2', 'prodi' => 'Informatika', 'angkatan' => 2024, 'kapasitas' => 40],
+            // Teknik Informatika Angkatan 2024
+            ['nama_kelas' => 'A', 'prodi' => 'Teknik Informatika', 'angkatan' => 2024, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknik Informatika', 'angkatan' => 2024, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknik Informatika', 'angkatan' => 2024, 'kapasitas' => 40],
+            ['nama_kelas' => 'D', 'prodi' => 'Teknik Informatika', 'angkatan' => 2024, 'kapasitas' => 40],
 
-            // Sistem Informasi Angkatan 2025
-            ['nama_kelas' => 'A1', 'prodi' => 'Sistem Informasi', 'angkatan' => 2025, 'kapasitas' => 40],
-            ['nama_kelas' => 'A2', 'prodi' => 'Sistem Informasi', 'angkatan' => 2025, 'kapasitas' => 40],
-            ['nama_kelas' => 'B1', 'prodi' => 'Sistem Informasi', 'angkatan' => 2025, 'kapasitas' => 40],
+            // Teknologi Rekayasa Multimedia Angkatan 2025
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2025, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2025, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2025, 'kapasitas' => 40],
 
-            // Sistem Informasi Angkatan 2022
-            ['nama_kelas' => 'A1', 'prodi' => 'Sistem Informasi', 'angkatan' => 2022, 'kapasitas' => 40],
-            ['nama_kelas' => 'A2', 'prodi' => 'Sistem Informasi', 'angkatan' => 2022, 'kapasitas' => 40],
-            ['nama_kelas' => 'B1', 'prodi' => 'Sistem Informasi', 'angkatan' => 2022, 'kapasitas' => 40],
+            // Teknologi Rekayasa Multimedia Angkatan 2022
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2022, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2022, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2022, 'kapasitas' => 40],
 
-            // Sistem Informasi Angkatan 2023
-            ['nama_kelas' => 'A1', 'prodi' => 'Sistem Informasi', 'angkatan' => 2023, 'kapasitas' => 40],
-            ['nama_kelas' => 'A2', 'prodi' => 'Sistem Informasi', 'angkatan' => 2023, 'kapasitas' => 40],
-            ['nama_kelas' => 'B1', 'prodi' => 'Sistem Informasi', 'angkatan' => 2023, 'kapasitas' => 40],
+            // Teknologi Rekayasa Multimedia Angkatan 2023
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2023, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2023, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2023, 'kapasitas' => 40],
 
-            // Sistem Informasi Angkatan 2024
-            ['nama_kelas' => 'A1', 'prodi' => 'Sistem Informasi', 'angkatan' => 2024, 'kapasitas' => 40],
-            ['nama_kelas' => 'A2', 'prodi' => 'Sistem Informasi', 'angkatan' => 2024, 'kapasitas' => 40],
-            ['nama_kelas' => 'B1', 'prodi' => 'Sistem Informasi', 'angkatan' => 2024, 'kapasitas' => 40],
+            // Teknologi Rekayasa Multimedia Angkatan 2024
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kapasitas' => 40],
+
+            // Teknologi Rekayasa Jaringan Komputer Angkatan 2025
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2025, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2025, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2025, 'kapasitas' => 40],
+
+            // Teknologi Rekayasa Jaringan Komputer Angkatan 2022
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2022, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2022, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2022, 'kapasitas' => 40],
+
+            // Teknologi Rekayasa Jaringan Komputer Angkatan 2023
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kapasitas' => 40],
+
+            // Teknologi Rekayasa Jaringan Komputer Angkatan 2024
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2024, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2024, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2024, 'kapasitas' => 40],
         ];
 
         foreach ($kelas_data as $data) {
