@@ -56,27 +56,21 @@
                 <div class="border-t pt-4 mt-4">
                     <h3 class="text-lg font-semibold text-gray-700 mb-4">Mata Kuliah yang Dipegang</h3>
 
-                    <div id="mataKuliahContainer" class="space-y-3">
-                        <div class="mata-kuliah-row flex gap-3">
-                            <input type="text" name="mata_kuliah[]" placeholder="Nama Mata Kuliah"
-                                class="flex-1 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                            <select name="tipe_kelas[]"
-                                class="w-32 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                                <option value="teori">Teori</option>
-                                <option value="praktikum">Praktikum</option>
-                            </select>
-                            <input type="number" name="sks[]" min="1" max="6" value="3"
-                                placeholder="SKS"
-                                class="w-20 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                            <button type="button" onclick="removeMataKuliah(this)"
-                                class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Hapus</button>
+                    @if($mataKuliahs->count() > 0)
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            @foreach($mataKuliahs as $mk)
+                                <label class="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition">
+                                    <input type="checkbox" name="mata_kuliah_ids[]" value="{{ $mk->id }}" class="w-4 h-4 text-blue-600 rounded">
+                                    <div class="ml-3">
+                                        <p class="font-medium text-gray-700">{{ $mk->kode_matakuliah }}</p>
+                                        <p class="text-sm text-gray-500">{{ $mk->nama_matakuliah }} ({{ $mk->sks }} SKS)</p>
+                                    </div>
+                                </label>
+                            @endforeach
                         </div>
-                    </div>
-
-                    <button type="button" onclick="addMataKuliah()"
-                        class="mt-3 px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors">
-                        + Tambah Mata Kuliah
-                    </button>
+                    @else
+                        <p class="text-gray-500 text-sm">Belum ada mata kuliah tersedia. Silakan tambahkan mata kuliah terlebih dahulu.</p>
+                    @endif
                 </div>
             </div>
 
@@ -92,26 +86,4 @@
             </div>
         </form>
     </div>
-
-    <script>
-        function addMataKuliah() {
-            const container = document.getElementById('mataKuliahContainer');
-            const newRow = document.createElement('div');
-            newRow.className = 'mata-kuliah-row flex gap-3';
-            newRow.innerHTML = `
-        <input type="text" name="mata_kuliah[]" placeholder="Nama Mata Kuliah" class="flex-1 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-        <select name="tipe_kelas[]" class="w-32 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-            <option value="teori">Teori</option>
-            <option value="praktikum">Praktikum</option>
-        </select>
-        <input type="number" name="sks[]" min="1" max="6" value="3" placeholder="SKS" class="w-20 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-        <button type="button" onclick="removeMataKuliah(this)" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Hapus</button>
-    `;
-            container.appendChild(newRow);
-        }
-
-        function removeMataKuliah(button) {
-            button.parentElement.remove();
-        }
-    </script>
 @endsection

@@ -58,7 +58,8 @@ class UserController extends Controller
 
     public function createDosen()
     {
-        return view('admin.dosen.create');
+        $mataKuliahs = \App\Models\MataKuliah::orderBy('kode_matakuliah')->get();
+        return view('admin.dosen.create', compact('mataKuliahs'));
     }
 
     public function storeDosen(Request $request)
@@ -68,12 +69,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'nip' => 'required|string|unique:dosens,nip',
             'jabatan' => 'required|string',
-            'mata_kuliah' => 'nullable|array',
-            'mata_kuliah.*' => 'nullable|string',
-            'tipe_kelas' => 'nullable|array',
-            'tipe_kelas.*' => 'nullable|in:teori,praktikum',
-            'sks' => 'nullable|array',
-            'sks.*' => 'nullable|numeric|min:1|max:6',
+            'mata_kuliah_ids' => 'nullable|array',
+            'mata_kuliah_ids.*' => 'exists:mata_kuliahs,id',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -93,15 +90,16 @@ class UserController extends Controller
                 'jabatan' => $request->jabatan,
             ]);
 
-            // Simpan Mata Kuliah yang dipegang dosen
-            if ($request->has('mata_kuliah') && is_array($request->mata_kuliah)) {
-                foreach ($request->mata_kuliah as $key => $mataKuliah) {
-                    if (!empty($mataKuliah)) {
+            // Simpan Mata Kuliah yang dipilih dosen
+            if ($request->has('mata_kuliah_ids') && is_array($request->mata_kuliah_ids)) {
+                foreach ($request->mata_kuliah_ids as $mataKuliahId) {
+                    $mataKuliah = \App\Models\MataKuliah::find($mataKuliahId);
+                    if ($mataKuliah) {
                         \App\Models\DosenMataKuliah::create([
                             'dosen_id' => $dosen->id,
-                            'mata_kuliah' => $mataKuliah,
-                            'tipe_kelas' => $request->tipe_kelas[$key] ?? 'teori',
-                            'sks' => $request->sks[$key] ?? 3,
+                            'mata_kuliah' => $mataKuliah->nama_matakuliah,
+                            'tipe_kelas' => 'teori',
+                            'sks' => $mataKuliah->sks,
                         ]);
                     }
                 }
