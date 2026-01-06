@@ -125,8 +125,6 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
 
     // Routes untuk Input Nilai (Excel)
     Route::get('/nilai', [DosenController::class, 'showInputNilai'])->name('dosen.nilai');
-    Route::get('/nilai-tabel', [DosenController::class, 'showNilaiTable'])->name('dosen.nilai.table');
-    Route::post('/nilai-tabel', [DosenController::class, 'storeNilaiTable'])->name('dosen.nilai.table.store');
     Route::get('/bimbingan', fn() => 'Halaman Bimbingan')->name('dosen.bimbingan');
     Route::get('/kelas', [DosenController::class, 'showKelas'])->name('dosen.kelas');
     Route::get('/profil', [DosenController::class, 'showProfil'])->name('dosen.profil');
