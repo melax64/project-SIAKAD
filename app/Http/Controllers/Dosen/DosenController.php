@@ -188,4 +188,25 @@ class DosenController extends Controller
 
         return back()->with('success', 'Nilai berhasil dihapus!');
     }
+
+    // API untuk mendapatkan mata kuliah dosen
+    public function getMataKuliah()
+    {
+        $user = Auth::user();
+        $dosen = Dosen::where('user_id', $user->id)->first();
+
+        if (!$dosen) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dosen tidak ditemukan'
+            ], 404);
+        }
+
+        $mataKuliah = \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)->get();
+
+        return response()->json([
+            'success' => true,
+            'mataKuliah' => $mataKuliah
+        ]);
+    }
 }

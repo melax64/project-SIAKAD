@@ -30,7 +30,12 @@
                         'icon' => 'graduation-cap',
                         'route' => 'admin.dosen',
                     ],
-                    // ['id' => 'mata-kuliah', 'label' => 'Mata Kuliah', 'icon' => 'book-open', 'route' => 'admin.matakuliah'],
+                    [
+                        'id' => 'mata-kuliah',
+                        'label' => 'Mata Kuliah',
+                        'icon' => 'book-open',
+                        'route' => 'admin.matakuliah.index',
+                    ],
                     // ['id' => 'jadwal', 'label' => 'Jadwal', 'icon' => 'calendar', 'route' => 'admin.jadwal'],
                     // ['id' => 'krs-management', 'label' => 'KRS Management', 'icon' => 'file-text', 'route' => 'admin.krs'],
                     // ['id' => 'settings', 'label' => 'Settings', 'icon' => 'settings', 'route' => 'admin.settings'],

@@ -81,39 +81,41 @@
 
                     <!-- Mata Kuliah dan Tipe Kelas -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <!-- Nama Mata Kuliah -->
+                        <!-- Nama Mata Kuliah (Dropdown) -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama Mata Kuliah
                                 <span class="text-red-500">*</span></label>
-                            <input type="text" name="mata_kuliah"
+                            <select id="mata-kuliah-select" name="mata_kuliah"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                placeholder="Contoh: Pemrograman Web" required>
+                                required onchange="updateMataKuliah()">
+                                <option value="">-- Pilih Mata Kuliah --</option>
+                            </select>
                         </div>
 
-                        <!-- Tipe Kelas -->
+                        <!-- Tipe Kelas (Auto Fill) -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipe Kelas <span
                                     class="text-red-500">*</span></label>
-                            <select name="tipe_kelas"
+                            <select id="tipe-kelas-select" name="tipe_kelas"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                required>
-                                <option value="">-- Pilih Tipe Kelas --</option>
+                                required disabled>
+                                <option value="">-- Otomatis --</option>
                                 <option value="teori">Teori</option>
                                 <option value="praktikum">Praktikum</option>
                             </select>
                         </div>
 
-                        <!-- SKS -->
+                        <!-- SKS (Auto Fill) -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">SKS <span
                                     class="text-red-500">*</span></label>
-                            <select name="sks"
+                            <select id="sks-select" name="sks"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                required>
-                                <option value="">-- Pilih SKS --</option>
+                                required disabled>
+                                <option value="">-- Otomatis --</option>
                                 <option value="1">1 SKS</option>
                                 <option value="2">2 SKS</option>
-                                <option value="3" selected>3 SKS</option>
+                                <option value="3">3 SKS</option>
                                 <option value="4">4 SKS</option>
                                 <option value="6">6 SKS</option>
                             </select>
@@ -265,6 +267,75 @@
 
     <!-- Script untuk mencari mahasiswa -->
     <script>
+        // Data mata kuliah dosen dari server
+        let dosenMataKuliah = [];
+
+        // Load mata kuliah dosen saat halaman dimuat
+        async function loadMataKuliah() {
+            try {
+                const response = await fetch('/dosen/api/mata-kuliah', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    dosenMataKuliah = data.mataKuliah;
+                    populateMataKuliahSelect();
+                }
+            } catch (error) {
+                console.error('Error loading mata kuliah:', error);
+            }
+        }
+
+        function populateMataKuliahSelect() {
+            const select = document.getElementById('mata-kuliah-select');
+            const currentValue = select.value;
+
+            // Hapus opsi lama kecuali yang pertama
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+
+            // Tambah opsi mata kuliah
+            dosenMataKuliah.forEach(mk => {
+                const option = document.createElement('option');
+                option.value = mk.mata_kuliah;
+                option.textContent = `${mk.mata_kuliah} (${mk.tipe_kelas}, ${mk.sks} SKS)`;
+                option.dataset.tipiKelas = mk.tipe_kelas;
+                option.dataset.sks = mk.sks;
+                select.appendChild(option);
+            });
+
+            // Kembalikan nilai sebelumnya jika ada
+            if (currentValue) {
+                select.value = currentValue;
+            }
+        }
+
+        function updateMataKuliah() {
+            const select = document.getElementById('mata-kuliah-select');
+            const selectedOption = select.options[select.selectedIndex];
+
+            if (selectedOption.dataset.tipiKelas) {
+                document.getElementById('tipe-kelas-select').value = selectedOption.dataset.tipiKelas;
+                document.getElementById('sks-select').value = selectedOption.dataset.sks;
+            } else {
+                document.getElementById('tipe-kelas-select').value = '';
+                document.getElementById('sks-select').value = '';
+            }
+        }
+
+        // Load mata kuliah saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadMataKuliah);
+
         document.getElementById('search-btn').addEventListener('click', async () => {
             const nim = document.getElementById('nim-input').value.trim();
             if (!nim) {

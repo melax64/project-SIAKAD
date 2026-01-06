@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\MataKuliahController;
 use App\Http\Controllers\Dosen\DosenController;
 use App\Http\Controllers\Mahasiswa\MahasiswaController;
 
@@ -69,6 +70,19 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dosen/create', [UserController::class, 'createDosen'])->name('admin.dosen.create');
     Route::post('/dosen', [UserController::class, 'storeDosen'])->name('admin.dosen.store');
 
+    // Mata Kuliah CRUD
+    Route::resource('matakuliah', MataKuliahController::class, [
+        'except' => ['show'],
+        'names' => [
+            'index' => 'admin.matakuliah.index',
+            'create' => 'admin.matakuliah.create',
+            'store' => 'admin.matakuliah.store',
+            'edit' => 'admin.matakuliah.edit',
+            'update' => 'admin.matakuliah.update',
+            'destroy' => 'admin.matakuliah.destroy',
+        ]
+    ]);
+
     // Dummy Routes (Penyelamat)
     Route::get('/matakuliah-dummy', fn() => 'Coming Soon')->name('admin.matakuliah');
     Route::get('/jadwal-dummy', fn() => 'Coming Soon')->name('admin.jadwal');
@@ -129,6 +143,9 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
             'mahasiswa' => $mahasiswa
         ]);
     })->name('dosen.api.search-mahasiswa');
+
+    // API untuk mendapatkan mata kuliah dosen
+    Route::get('/api/mata-kuliah', [DosenController::class, 'getMataKuliah'])->name('dosen.api.mata-kuliah');
 });
 
 

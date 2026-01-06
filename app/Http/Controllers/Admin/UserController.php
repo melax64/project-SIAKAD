@@ -68,6 +68,12 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'nip' => 'required|string|unique:dosens,nip',
             'jabatan' => 'required|string',
+            'mata_kuliah' => 'nullable|array',
+            'mata_kuliah.*' => 'nullable|string',
+            'tipe_kelas' => 'nullable|array',
+            'tipe_kelas.*' => 'nullable|in:teori,praktikum',
+            'sks' => 'nullable|array',
+            'sks.*' => 'nullable|numeric|min:1|max:6',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -81,11 +87,25 @@ class UserController extends Controller
             ]);
 
             // Buat Profil Dosen
-            Dosen::create([
+            $dosen = Dosen::create([
                 'user_id' => $user->id,
                 'nip' => $request->nip,
                 'jabatan' => $request->jabatan,
             ]);
+
+            // Simpan Mata Kuliah yang dipegang dosen
+            if ($request->has('mata_kuliah') && is_array($request->mata_kuliah)) {
+                foreach ($request->mata_kuliah as $key => $mataKuliah) {
+                    if (!empty($mataKuliah)) {
+                        \App\Models\DosenMataKuliah::create([
+                            'dosen_id' => $dosen->id,
+                            'mata_kuliah' => $mataKuliah,
+                            'tipe_kelas' => $request->tipe_kelas[$key] ?? 'teori',
+                            'sks' => $request->sks[$key] ?? 3,
+                        ]);
+                    }
+                }
+            }
         });
 
         return redirect()->route('admin.dashboard')->with('success', 'Dosen berhasil ditambahkan!');

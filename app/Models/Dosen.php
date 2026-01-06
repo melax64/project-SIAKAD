@@ -19,4 +19,9 @@ class Dosen extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function mataKuliah()
+    {
+        return $this->hasMany(DosenMataKuliah::class);
+    }
 }
