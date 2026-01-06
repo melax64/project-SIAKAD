@@ -10,13 +10,14 @@ class AdminSeeder extends Seeder
 {
     public function run()
     {
-        // Menggunakan updateOrCreate agar jika seeder dijalankan 2x, 
-        // tidak error duplicate, tapi mengupdate data yang sudah ada.
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@siakad.com',
-            'password' => bcrypt('123456'), // Pastikan pakai bcrypt
-            'role' => 'admin',
-        ]);
+        // Menggunakan firstOrCreate untuk cegah duplicate
+        User::firstOrCreate(
+            ['email' => 'admin@siakad.com'],
+            [
+                'name' => 'Admin',
+                'password' => bcrypt('123456'),
+                'role' => 'admin',
+            ]
+        );
     }
 }

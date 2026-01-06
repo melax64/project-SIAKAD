@@ -20,8 +20,8 @@
                     ],
                     [
                         'id' => 'input-nilai',
-                        'label' => 'Input Nilai (Form)',
-                        'icon' => 'file-spreadsheet',
+                        'label' => 'Input Nilai',
+                        'icon' => 'table-2',
                         'route' => 'dosen.nilai',
                     ],
                     [

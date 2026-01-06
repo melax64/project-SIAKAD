@@ -212,150 +212,87 @@ class DosenController extends Controller
         ]);
     }
 
-    // ===== HALAMAN INPUT NILAI TABEL (BARU) =====
-    public function showNilaiTable()
+    // Menampilkan halaman input nilai
+    public function showInputNilai()
     {
         $user = Auth::user();
-        $dosen = Dosen::where('user_id', $user->id)->first();
+        $dosen = Dosen::where('user_id', $user->id)->with('mataKuliah.mataKuliah')->first();
 
-        // Get mata kuliah yang diajar dosen
-        $mataKuliahList = \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)
-            ->select('mata_kuliah', 'tipe_kelas', 'sks')
-            ->distinct()
-            ->get();
-
-        return view('dosen.nilai-table', [
-            'mataKuliahList' => $mataKuliahList,
+        return view('dosen.nilai-input', [
+            'dosen' => $dosen,
             'activePage' => 'input-nilai',
         ]);
     }
 
-    // API untuk get mahasiswa berdasarkan mata kuliah
-    public function getMahasiswaByMataKuliah($mataKuliah)
+    // Get mahasiswa berdasarkan mata kuliah
+    public function getMahasiswaByMataKuliah($dosenMataKuliahId)
     {
         $user = Auth::user();
         $dosen = Dosen::where('user_id', $user->id)->first();
 
-        // Cek apakah dosen mengajar mata kuliah ini
-        $dosenMataKuliah = \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)
-            ->where('mata_kuliah', $mataKuliah)
+        // Validasi bahwa mata kuliah ini milik dosen
+        $dosenMataKuliah = \App\Models\DosenMataKuliah::where('id', $dosenMataKuliahId)
+            ->where('dosen_id', $dosen->id)
             ->first();
 
         if (!$dosenMataKuliah) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak mengajar mata kuliah ini'
-            ], 403);
+                'message' => 'Mata kuliah tidak ditemukan'
+            ], 404);
         }
 
-        // Get mahasiswa yang terdaftar di mata kuliah ini
-        // Asumsikan ada tabel enrollment atau sejenisnya
-        // Untuk sekarang, kita tampilkan semua mahasiswa dengan nilai yang sudah ada
-        $nilaiList = Nilai::where('dosen_id', $dosen->id)
-            ->where('mata_kuliah', $mataKuliah)
-            ->with(['mahasiswa.user'])
-            ->get();
-
-        // Format data untuk response
-        $data = $nilaiList->map(function ($nilai) {
-            return [
-                'id' => $nilai->id,
-                'mahasiswa_id' => $nilai->mahasiswa_id,
-                'nama' => $nilai->mahasiswa->user->name,
-                'nim' => $nilai->mahasiswa->nim,
-                'kelas' => $nilai->mahasiswa->prodi ?? '-',
-                'nilai_angka' => $nilai->nilai_akhir ?? 0,
-                'nilai_huruf' => $this->convertToGrade($nilai->nilai_akhir ?? 0),
-            ];
-        });
+        // Get mahasiswa untuk mata kuliah ini
+        // Hubungan banyak-ke-banyak via tabel tertentu
+        // Untuk sekarang kita ambil semua mahasiswa (adjust sesuai kebutuhan)
+        $mahasiswas = Mahasiswa::with('user')
+            ->get()
+            ->take(10); // Limit untuk demo
 
         return response()->json([
             'success' => true,
-            'mahasiswa' => $data
+            'mahasiswa' => $mahasiswas
         ]);
     }
 
-    // Store nilai dari tabel (AJAX/FORM)
-    public function storeNilaiTable(Request $request)
+    // Submit nilai
+    public function submitNilai(Request $request)
     {
         $user = Auth::user();
         $dosen = Dosen::where('user_id', $user->id)->first();
 
-        $validated = $request->validate([
-            'mata_kuliah' => 'required|string',
-            'nilai_data' => 'required|array',
-            'nilai_data.*.mahasiswa_id' => 'required|exists:mahasiswas,id',
-            'nilai_data.*.nilai_angka' => 'required|numeric|min:0|max:100',
-        ]);
+        $nilai = $request->input('nilai', []);
 
-        $mata_kuliah = $validated['mata_kuliah'];
-
-        // Cek apakah dosen mengajar mata kuliah ini
-        $dosenMataKuliah = \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)
-            ->where('mata_kuliah', $mata_kuliah)
-            ->first();
-
-        if (!$dosenMataKuliah) {
+        if (empty($nilai)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda tidak mengajar mata kuliah ini'
-            ], 403);
+                'message' => 'Tidak ada nilai yang disubmit'
+            ], 400);
         }
 
-        // Simpan/update nilai untuk setiap mahasiswa
-        foreach ($validated['nilai_data'] as $item) {
-            $nilai = Nilai::where('dosen_id', $dosen->id)
-                ->where('mahasiswa_id', $item['mahasiswa_id'])
-                ->where('mata_kuliah', $mata_kuliah)
-                ->first();
-
-            if ($nilai) {
-                // Update
-                $nilai->update([
-                    'nilai_akhir' => $item['nilai_angka'],
-                    'nilai_huruf' => $this->convertToGrade($item['nilai_angka']),
-                ]);
-            } else {
-                // Create
-                Nilai::create([
-                    'dosen_id' => $dosen->id,
-                    'mahasiswa_id' => $item['mahasiswa_id'],
-                    'mata_kuliah' => $mata_kuliah,
-                    'nilai_akhir' => $item['nilai_angka'],
-                    'nilai_huruf' => $this->convertToGrade($item['nilai_angka']),
-                ]);
+        try {
+            foreach ($nilai as $item) {
+                $nilaiModel = Nilai::updateOrCreate(
+                    [
+                        'mahasiswa_id' => $item['mahasiswa_id'],
+                        'dosen_id' => $dosen->id,
+                    ],
+                    [
+                        'nilai_angka' => $item['nilai_angka'],
+                        'nilai_huruf' => $item['nilai_huruf'],
+                    ]
+                );
             }
-        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Nilai berhasil disimpan!'
-        ]);
-    }
-
-    // Helper function: Convert nilai angka ke huruf
-    private function convertToGrade($nilai)
-    {
-        if ($nilai >= 85) {
-            return 'A';
-        } elseif ($nilai >= 80) {
-            return 'A-';
-        } elseif ($nilai >= 75) {
-            return 'B+';
-        } elseif ($nilai >= 70) {
-            return 'B';
-        } elseif ($nilai >= 65) {
-            return 'B-';
-        } elseif ($nilai >= 60) {
-            return 'C+';
-        } elseif ($nilai >= 55) {
-            return 'C';
-        } elseif ($nilai >= 50) {
-            return 'C-';
-        } elseif ($nilai >= 40) {
-            return 'D';
-        } else {
-            return 'E';
+            return response()->json([
+                'success' => true,
+                'message' => 'Nilai berhasil disimpan'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
     }
 }
