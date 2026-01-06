@@ -52,12 +52,17 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 
     // Dashboard Admin
     Route::get('/dashboard', function () {
-        $menuItems = [
-            ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'icon' => 'layout-dashboard', 'id' => 'dashboard'],
-            ['label' => 'Mahasiswa', 'route' => 'admin.mahasiswa', 'icon' => 'users', 'id' => 'mahasiswa'],
-            ['label' => 'Dosen', 'route' => 'admin.dosen', 'icon' => 'graduation-cap', 'id' => 'dosen'],
-        ];
-        return view('admin.dashboard', ['menuItems' => $menuItems, 'activePage' => 'dashboard']);
+        // Count dari database
+        $mahasiswaCount = \App\Models\Mahasiswa::count();
+        $dosenCount = \App\Models\Dosen::count();
+        $mataKuliahCount = \App\Models\MataKuliah::count();
+
+        return view('admin.dashboard', [
+            'mahasiswaCount' => $mahasiswaCount,
+            'dosenCount' => $dosenCount,
+            'mataKuliahCount' => $mataKuliahCount,
+            'activePage' => 'dashboard',
+        ]);
     })->name('admin.dashboard');
 
     // Link Sidebar Admin
@@ -101,19 +106,19 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
 
     // Dashboard Dosen
     Route::get('/dashboard', function () {
-        $menuItems = [
-            ['label' => 'Dashboard', 'route' => 'dosen.dashboard', 'icon' => 'layout-dashboard', 'id' => 'dashboard'],
-            ['label' => 'Jadwal Mengajar', 'route' => 'dosen.jadwal', 'icon' => 'calendar', 'id' => 'jadwal'],
-            ['label' => 'Input Nilai', 'route' => 'dosen.nilai', 'icon' => 'file-text', 'id' => 'nilai'],
-        ];
+        $user = Auth::user();
+        $dosen = \App\Models\Dosen::where('user_id', $user->id)->first();
 
-        // Pastikan view ini ada!
+        // Count kelas dan mahasiswa
+        $mataKuliahCount = $dosen->mataKuliah()->count();
+        $nilaiCount = \App\Models\Nilai::where('dosen_id', $dosen->id)->count();
+
         return view('dosen.dashboard', [
-            'user' => Auth::user(),
-            'menuItems' => $menuItems,
+            'user' => $user,
+            'dosen' => $dosen,
+            'mataKuliahCount' => $mataKuliahCount,
+            'nilaiCount' => $nilaiCount,
             'activePage' => 'dashboard',
-            'userName' => Auth::user()->name,
-            'userRole' => 'Dosen',
         ]);
     })->name('dosen.dashboard');
 
