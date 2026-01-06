@@ -272,16 +272,35 @@ class DosenController extends Controller
     public function getMahasiswaByKelas($kelasId, Request $request)
     {
         try {
+            $user = Auth::user();
+            $dosen = Dosen::where('user_id', $user->id)->first();
             $kelas = \App\Models\Kelas::findOrFail($kelasId);
+            
+            // Get mata_kuliah_id from request
+            $mataKuliahId = $request->query('mata_kuliah_id');
+            $mataKuliahName = null;
+            
+            if ($mataKuliahId) {
+                // Get mata_kuliah name from DosenMataKuliah
+                $dosenMk = \App\Models\DosenMataKuliah::find($mataKuliahId);
+                $mataKuliahName = $dosenMk ? $dosenMk->mata_kuliah : null;
+            }
 
             // Dapatkan mahasiswa yang ada di kelas ini
             $mahasiswas = Mahasiswa::with(['user', 'kelas'])
                 ->where('kelas_id', $kelasId)
                 ->orderBy('nim')
                 ->get()
-                ->map(function ($mahasiswa) {
-                    // Ambil nilai yang sudah ada (jika ada)
-                    $nilai = Nilai::where('mahasiswa_id', $mahasiswa->id)->first();
+                ->map(function ($mahasiswa) use ($dosen, $mataKuliahName) {
+                    // Ambil nilai yang sudah ada (jika ada) - filter by dosen and mata_kuliah
+                    $nilaiQuery = Nilai::where('mahasiswa_id', $mahasiswa->id)
+                        ->where('dosen_id', $dosen->id);
+                    
+                    if ($mataKuliahName) {
+                        $nilaiQuery->where('mata_kuliah', $mataKuliahName);
+                    }
+                    
+                    $nilai = $nilaiQuery->first();
 
                     return [
                         'id' => $mahasiswa->id,

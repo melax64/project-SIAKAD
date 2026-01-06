@@ -191,7 +191,10 @@
 
         // Load mahasiswa berdasarkan kelas
         function loadMahasiswaByKelas(kelasId) {
-            fetch(`/dosen/api/mahasiswa-by-kelas/${kelasId}`)
+            const mataKuliahId = document.getElementById('mataKuliahSelect').value;
+            const url = `/dosen/api/mahasiswa-by-kelas/${kelasId}${mataKuliahId ? '?mata_kuliah_id=' + mataKuliahId : ''}`;
+            
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     renderMahasiswaTable(data.mahasiswa || []);
