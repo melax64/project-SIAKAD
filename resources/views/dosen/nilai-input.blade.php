@@ -163,6 +163,10 @@
 
             let html = '';
             mahasiswas.forEach((mhs, index) => {
+                const nilaiAngka = (mhs.nilai_angka !== null && mhs.nilai_angka !== undefined) ? mhs.nilai_angka : '';
+                const nilaiHuruf = mhs.nilai_huruf || '-';
+                const gradeClass = getNilaiClass(nilaiHuruf);
+                
                 html += `
                     <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
                         <td class="px-4 py-3 text-gray-900 dark:text-white font-medium">${index + 1}</td>
@@ -175,14 +179,15 @@
                                 max="100" 
                                 class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-center font-semibold focus:outline-none focus:border-blue-500 transition"
                                 placeholder="0"
+                                value="${nilaiAngka}"
                                 data-mahasiswa-id="${mhs.id}"
                                 data-index="${index}"
                                 onchange="updateNilaiHuruf(this)"
                                 oninput="updateNilaiHuruf(this)">
                         </td>
                         <td class="px-4 py-3 text-center">
-                            <span class="inline-block px-4 py-2 font-bold rounded-lg text-white bg-gray-500 transition"
-                                  id="huruf-${index}">-</span>
+                            <span class="inline-block px-4 py-2 font-bold rounded-lg text-white ${gradeClass} transition"
+                                  id="huruf-${index}">${nilaiHuruf}</span>
                         </td>
                     </tr>
                 `;
@@ -278,7 +283,11 @@
 
                     if (data.success) {
                         alert('✅ Nilai berhasil disimpan!');
-                        resetForm();
+                        // Reload data untuk menampilkan nilai terbaru
+                        const selectedId = document.getElementById('matkulSelect').value;
+                        if (selectedId) {
+                            loadMahasiswaByMataKuliah(selectedId);
+                        }
                     } else {
                         alert('❌ Error: ' + (data.message || 'Gagal menyimpan nilai'));
                     }

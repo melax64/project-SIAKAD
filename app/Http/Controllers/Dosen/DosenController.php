@@ -284,14 +284,22 @@ class DosenController extends Controller
         // Jika tidak ada filter, batasi hasil untuk performa (tune as needed)
         $mahasiswas = $query->orderBy('prodi')->orderBy('angkatan')->get();
 
-        // Transform data untuk menambahkan nama kelas
-        $mahasiswas = $mahasiswas->map(function ($mhs) {
+        // Transform data untuk menambahkan nama kelas dan nilai yang sudah ada
+        $mahasiswas = $mahasiswas->map(function ($mhs) use ($dosen, $dosenMataKuliah) {
+            // Cari nilai yang sudah ada untuk mahasiswa ini
+            $nilai = Nilai::where('mahasiswa_id', $mhs->id)
+                ->where('dosen_id', $dosen->id)
+                ->where('mata_kuliah', $dosenMataKuliah->mata_kuliah)
+                ->first();
+
             return [
                 'id' => $mhs->id,
                 'nim' => $mhs->nim,
                 'prodi' => $mhs->prodi,
                 'angkatan' => $mhs->angkatan,
                 'kelas' => $mhs->kelas ? $mhs->kelas->nama_kelas : '-',
+                'nilai_angka' => $nilai ? $nilai->nilai_angka : null,
+                'nilai_huruf' => $nilai ? $nilai->nilai_huruf : null,
                 'user' => [
                     'name' => $mhs->user->name ?? '-',
                     'email' => $mhs->user->email ?? '-',
