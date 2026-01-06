@@ -225,7 +225,7 @@ class DosenController extends Controller
     }
 
     // Get mahasiswa berdasarkan mata kuliah
-    public function getMahasiswaByMataKuliah($dosenMataKuliahId)
+    public function getMahasiswaByMataKuliah($dosenMataKuliahId, Request $request)
     {
         $user = Auth::user();
         $dosen = Dosen::where('user_id', $user->id)->first();
@@ -242,16 +242,80 @@ class DosenController extends Controller
             ], 404);
         }
 
-        // Get mahasiswa untuk mata kuliah ini
-        // Hubungan banyak-ke-banyak via tabel tertentu
-        // Untuk sekarang kita ambil semua mahasiswa (adjust sesuai kebutuhan)
-        $mahasiswas = Mahasiswa::with('user')
-            ->get()
-            ->take(10); // Limit untuk demo
+        // Optional kelas and prodi filter via query parameters
+        $kelas = $request->query('kelas');
+        $prodiCode = $request->query('prodi');
+
+        $query = Mahasiswa::with('user');
+
+        if ($kelas) {
+            $query->where('kelas', $kelas);
+        }
+
+        // Map of prodi full name => code
+        $kodeMap = [
+            'Teknik Informatika' => 'TI',
+            'Teknologi Rekayasa Multimedia' => 'TRMM',
+            'Teknologi Rekayasa Komputer Jaringan' => 'TRKJ',
+        ];
+
+        $prodiName = null;
+        if ($prodiCode) {
+            $prodiName = array_search($prodiCode, $kodeMap, true);
+            if ($prodiName) {
+                $query->where('prodi', $prodiName);
+            }
+        }
+
+        // Jika tidak ada filter, batasi hasil untuk performa (tune as needed)
+        $mahasiswas = $query->orderBy('prodi')->orderBy('angkatan')->orderBy('kelas')->get();
+
+        // Also return a list of available kelas values (global fallback)
+        $kelasList = Mahasiswa::whereNotNull('kelas')
+            ->distinct()
+            ->orderBy('kelas')
+            ->pluck('kelas')
+            ->filter()
+            ->values()
+            ->toArray();
+
+        $angkatans = Mahasiswa::whereNotNull('angkatan')
+            ->distinct()
+            ->orderBy('angkatan')
+            ->pluck('angkatan')
+            ->filter()
+            ->values()
+            ->toArray();
+
+        // Build global kelas patterns. If a prodi filter is provided and recognized, limit patterns to that prodi only.
+        $allKelasPatterns = [];
+        if (!empty($prodiName)) {
+            $kode = $kodeMap[$prodiName] ?? null;
+            if ($kode) {
+                foreach ($angkatans as $angk) {
+                    foreach (['A', 'B', 'C'] as $letter) {
+                        $allKelasPatterns[] = sprintf('%s-%s-%s', $kode, $angk, $letter);
+                    }
+                }
+            }
+        } else {
+            foreach ($kodeMap as $pName => $kode) {
+                foreach ($angkatans as $angk) {
+                    foreach (['A', 'B', 'C'] as $letter) {
+                        $allKelasPatterns[] = sprintf('%s-%s-%s', $kode, $angk, $letter);
+                    }
+                }
+            }
+        }
+
+        // Ensure uniqueness and order
+        $allKelasPatterns = array_values(array_unique($allKelasPatterns));
 
         return response()->json([
             'success' => true,
-            'mahasiswa' => $mahasiswas
+            'mahasiswa' => $mahasiswas,
+            'kelasList' => $kelasList,
+            'allKelasPatterns' => $allKelasPatterns,
         ]);
     }
 
