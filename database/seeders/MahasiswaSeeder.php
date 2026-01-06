@@ -106,7 +106,34 @@ class MahasiswaSeeder extends Seeder
             );
         }
 
-        $this->command->info("✅ Total " . count($mahasiswas) . " mahasiswa berhasil dibuat!");
+        // Tambahkan mahasiswa khusus: Fathur
+        $fathurEmail = 'fathur@student.ac.id';
+        $fathurUser = User::firstOrCreate(
+            ['email' => $fathurEmail],
+            [
+                'name' => 'Fathur',
+                'password' => Hash::make('202020'), // Password = NIM
+                'role' => 'mahasiswa',
+            ]
+        );
+
+        $fathurKelas = Kelas::where('nama_kelas', 'C')
+            ->where('prodi', 'Teknik Informatika')
+            ->where('angkatan', 2024)
+            ->first();
+
+        Mahasiswa::firstOrCreate(
+            ['nim' => '202020'],
+            [
+                'user_id' => $fathurUser->id,
+                'prodi' => 'Teknik Informatika',
+                'angkatan' => 2024,
+                'kelas_id' => $fathurKelas->id ?? null,
+            ]
+        );
+
+        $this->command->info("✅ Total " . (count($mahasiswas) + 1) . " mahasiswa berhasil dibuat!");
+        $this->command->info("👤 Mahasiswa khusus: Fathur (NIM: 202020, TI 2024 C) - KRS kosong");
         
         // Hitung per prodi
         $tiCount = count(array_filter($mahasiswas, fn($m) => $m['prodi'] === 'Teknik Informatika'));

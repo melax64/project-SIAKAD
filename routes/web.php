@@ -77,6 +77,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/dosen/create', [UserController::class, 'createDosen'])->name('admin.dosen.create');
     Route::post('/dosen', [UserController::class, 'storeDosen'])->name('admin.dosen.store');
+    Route::get('/dosen/{id}/edit', [UserController::class, 'editDosen'])->name('admin.dosen.edit');
+    Route::put('/dosen/{id}', [UserController::class, 'updateDosen'])->name('admin.dosen.update');
     Route::delete('/dosen/{id}', [UserController::class, 'destroyDosen'])->name('admin.dosen.destroy');
 
     // Mata Kuliah CRUD

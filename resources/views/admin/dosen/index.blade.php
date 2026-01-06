@@ -61,6 +61,8 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 flex gap-2">
+                                <a href="{{ route('admin.dosen.edit', $dsn->id) }}"
+                                    class="text-blue-600 hover:text-blue-900 font-medium">Edit</a>
                                 <form action="{{ route('admin.dosen.destroy', $dsn->id) }}" method="POST" class="inline"
                                     onsubmit="return confirm('Yakin ingin menghapus dosen ini?')">
                                     @csrf

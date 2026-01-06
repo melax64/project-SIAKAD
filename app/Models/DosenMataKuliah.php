@@ -10,6 +10,7 @@ class DosenMataKuliah extends Model
 
     protected $fillable = [
         'dosen_id',
+        'mata_kuliah_id',
         'mata_kuliah',
         'tipe_kelas',
         'sks',
@@ -21,6 +22,11 @@ class DosenMataKuliah extends Model
     }
 
     public function mataKuliah()
+    {
+        return $this->belongsTo(MataKuliah::class, 'mata_kuliah_id');
+    }
+
+    public function mataKuliahByName()
     {
         return $this->belongsTo(MataKuliah::class, 'mata_kuliah', 'nama_matakuliah');
     }

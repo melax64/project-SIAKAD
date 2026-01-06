@@ -248,9 +248,22 @@ class DosenController extends Controller
             ->orderBy('nama_kelas')
             ->get();
 
+        // Load mata kuliah yang diampu dosen (melalui DosenMataKuliah)
+        $allMataKuliah = $dosen->mataKuliah()
+            ->with('mataKuliah')
+            ->get()
+            ->map(function($dosenMk) {
+                return (object) [
+                    'id' => $dosenMk->id,
+                    'kode_matakuliah' => $dosenMk->mataKuliah->kode_matakuliah ?? '-',
+                    'nama_matakuliah' => $dosenMk->mata_kuliah,
+                ];
+            });
+
         return view('dosen.nilai-input', [
             'dosen' => $dosen,
             'allKelas' => $allKelas,
+            'allMataKuliah' => $allMataKuliah,
             'activePage' => 'input-nilai',
         ]);
     }

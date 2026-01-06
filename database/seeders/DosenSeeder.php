@@ -107,6 +107,7 @@ class DosenSeeder extends Seeder
                                 'tipe_kelas' => 'teori',
                             ],
                             [
+                                'mata_kuliah_id' => $mataKuliahModel->id,
                                 'sks' => $mataKuliahModel->sks,
                             ]
                         );
