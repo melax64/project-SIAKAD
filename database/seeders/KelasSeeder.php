@@ -57,25 +57,25 @@ class KelasSeeder extends Seeder
             ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kapasitas' => 40],
             ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kapasitas' => 40],
 
-            // Teknologi Rekayasa Jaringan Komputer Angkatan 2025
-            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2025, 'kapasitas' => 40],
-            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2025, 'kapasitas' => 40],
-            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2025, 'kapasitas' => 40],
+            // Teknologi Rekayasa Komputer Jaringan Angkatan 2025
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2025, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2025, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2025, 'kapasitas' => 40],
 
-            // Teknologi Rekayasa Jaringan Komputer Angkatan 2022
-            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2022, 'kapasitas' => 40],
-            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2022, 'kapasitas' => 40],
-            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2022, 'kapasitas' => 40],
+            // Teknologi Rekayasa Komputer Jaringan Angkatan 2022
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2022, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2022, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2022, 'kapasitas' => 40],
 
-            // Teknologi Rekayasa Jaringan Komputer Angkatan 2023
-            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kapasitas' => 40],
-            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kapasitas' => 40],
-            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kapasitas' => 40],
+            // Teknologi Rekayasa Komputer Jaringan Angkatan 2023
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2023, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2023, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2023, 'kapasitas' => 40],
 
-            // Teknologi Rekayasa Jaringan Komputer Angkatan 2024
-            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2024, 'kapasitas' => 40],
-            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2024, 'kapasitas' => 40],
-            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2024, 'kapasitas' => 40],
+            // Teknologi Rekayasa Komputer Jaringan Angkatan 2024
+            ['nama_kelas' => 'A', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2024, 'kapasitas' => 40],
+            ['nama_kelas' => 'B', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2024, 'kapasitas' => 40],
+            ['nama_kelas' => 'C', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2024, 'kapasitas' => 40],
         ];
 
         foreach ($kelas_data as $data) {

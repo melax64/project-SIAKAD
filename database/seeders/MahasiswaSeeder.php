@@ -36,18 +36,18 @@ class MahasiswaSeeder extends Seeder
             ['nim' => 'TRMM2024002', 'nama' => 'Nina Salsabila', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kelas_name' => 'A'],
             ['nim' => 'TRMM2024003', 'nama' => 'Oscar Mandala', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kelas_name' => 'B'],
             
-            // Angkatan 2023 - Teknologi Rekayasa Jaringan Komputer
-            ['nim' => 'TRKJ2023001', 'nama' => 'Padmi Wijaya', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'A'],
-            ['nim' => 'TRKJ2023002', 'nama' => 'Qori Pratama', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'A'],
-            ['nim' => 'TRKJ2023003', 'nama' => 'Rini Kusuma', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'B'],
-            ['nim' => 'TRKJ2023004', 'nama' => 'Sandi Hermawan', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'B'],
+            // Angkatan 2023 - Teknologi Rekayasa Komputer Jaringan
+            ['nim' => 'TRKJ2023001', 'nama' => 'Padmi Wijaya', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2023, 'kelas_name' => 'A'],
+            ['nim' => 'TRKJ2023002', 'nama' => 'Qori Pratama', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2023, 'kelas_name' => 'A'],
+            ['nim' => 'TRKJ2023003', 'nama' => 'Rini Kusuma', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2023, 'kelas_name' => 'B'],
+            ['nim' => 'TRKJ2023004', 'nama' => 'Sandi Hermawan', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2023, 'kelas_name' => 'B'],
             
             // Tambahan untuk reach 26
             ['nim' => 'TI2023001', 'nama' => 'Tina Susanti', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kelas_name' => 'A'],
             ['nim' => 'TI2023002', 'nama' => 'Udin Suganda', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kelas_name' => 'A'],
             ['nim' => 'TI2023003', 'nama' => 'Vina Kusuma', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kelas_name' => 'B'],
-            ['nim' => 'TRKJ2023005', 'nama' => 'Wahyu Santoso', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'A'],
-            ['nim' => 'TRKJ2023006', 'nama' => 'Xenya Kusuma', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'B'],
+            ['nim' => 'TRKJ2023005', 'nama' => 'Wahyu Santoso', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2023, 'kelas_name' => 'A'],
+            ['nim' => 'TRKJ2023006', 'nama' => 'Xenya Kusuma', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'angkatan' => 2023, 'kelas_name' => 'B'],
             ['nim' => 'TI2022001', 'nama' => 'Yuni Hayati', 'prodi' => 'Teknik Informatika', 'angkatan' => 2022, 'kelas_name' => 'A'],
             ['nim' => 'TI2022002', 'nama' => 'Zaki Rahman', 'prodi' => 'Teknik Informatika', 'angkatan' => 2022, 'kelas_name' => 'B'],
         ];
@@ -89,6 +89,6 @@ class MahasiswaSeeder extends Seeder
         $this->command->info("📊 Rincian:");
         $this->command->info("   • Teknik Informatika: 13 mahasiswa");
         $this->command->info("   • Teknologi Rekayasa Multimedia: 3 mahasiswa");
-        $this->command->info("   • Teknologi Rekayasa Jaringan Komputer: 10 mahasiswa");
+        $this->command->info("   • Teknologi Rekayasa Komputer Jaringan: 10 mahasiswa");
     }
 }

@@ -225,72 +225,83 @@ class DosenController extends Controller
     }
 
     // Get mahasiswa berdasarkan mata kuliah
-    public function getMahasiswaByMataKuliah($mataKuliah)
+    public function getMahasiswaByMataKuliah($dosenMataKuliahId, Request $request)
     {
         $user = Auth::user();
         $dosen = Dosen::where('user_id', $user->id)->first();
 
-        // Cari mata kuliah berdasarkan ID atau nama
-        $mataKuliahObj = \App\Models\MataKuliah::find($mataKuliah);
-        
-        if (!$mataKuliahObj) {
-            // Fallback ke cari berdasarkan nama (dari dosen_mata_kuliah)
-            $mataKuliahObj = \App\Models\MataKuliah::where('nama_matakuliah', $mataKuliah)->first();
-        }
+        // Cari mata kuliah dari DosenMataKuliah berdasarkan ID
+        $dosenMataKuliah = \App\Models\DosenMataKuliah::where('id', $dosenMataKuliahId)
+            ->where('dosen_id', $dosen->id)
+            ->first();
 
-        if (!$mataKuliahObj) {
+        if (!$dosenMataKuliah) {
             return response()->json([
                 'success' => false,
                 'message' => 'Mata kuliah tidak ditemukan'
             ], 404);
         }
 
-        // Ambil mahasiswa yang mengambil mata kuliah ini (dari KRS)
-        $currentSemester = '2024/2025 Genap';
-        $mahasiswaListFromKRS = \App\Models\MahasiswaMataKuliah::where('mata_kuliah_id', $mataKuliahObj->id)
-            ->where('semester', $currentSemester)
-            ->where('status', 'aktif')
-            ->with(['mahasiswa.user', 'mahasiswa.kelas'])
-            ->get();
+        // Optional kelas and prodi filter via query parameters
+        $kelas = $request->query('kelas');
+        $prodiCode = $request->query('prodi');
 
-        // Format data dari KRS
-        $data = $mahasiswaListFromKRS->map(function ($item) {
+        // Pertama, dapatkan ID mata kuliah dari nama
+        $mataKuliahObj = \App\Models\MataKuliah::where('nama_matakuliah', $dosenMataKuliah->mata_kuliah)->first();
+        
+        if (!$mataKuliahObj) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data mata kuliah tidak ditemukan'
+            ], 404);
+        }
+
+        // Dapatkan mahasiswa yang terdaftar di mata kuliah ini
+        $query = Mahasiswa::with(['user', 'kelas'])
+            ->whereHas('mataKuliahs', function ($q) use ($mataKuliahObj) {
+                $q->where('mata_kuliah_id', $mataKuliahObj->id);
+            });
+
+        if ($kelas) {
+            $query->where('kelas', $kelas);
+        }
+
+        // Map of prodi full name => code
+        $kodeMap = [
+            'Teknik Informatika' => 'TI',
+            'Teknologi Rekayasa Multimedia' => 'TRMM',
+            'Teknologi Rekayasa Komputer Jaringan' => 'TRKJ',
+        ];
+
+        $prodiName = null;
+        if ($prodiCode) {
+            $prodiName = array_search($prodiCode, $kodeMap, true);
+            if ($prodiName) {
+                $query->where('prodi', $prodiName);
+            }
+        }
+
+        // Jika tidak ada filter, batasi hasil untuk performa (tune as needed)
+        $mahasiswas = $query->orderBy('prodi')->orderBy('angkatan')->get();
+
+        // Transform data untuk menambahkan nama kelas
+        $mahasiswas = $mahasiswas->map(function ($mhs) {
             return [
-                'id' => $item->mahasiswa_id,
-                'mahasiswa_id' => $item->mahasiswa_id,
-                'nama' => $item->mahasiswa->user->name,
-                'nim' => $item->mahasiswa->nim,
-                'kelas' => $item->mahasiswa->kelas ? $item->mahasiswa->kelas->nama_kelas : '-',
+                'id' => $mhs->id,
+                'nim' => $mhs->nim,
+                'prodi' => $mhs->prodi,
+                'angkatan' => $mhs->angkatan,
+                'kelas' => $mhs->kelas ? $mhs->kelas->nama_kelas : '-',
                 'user' => [
-                    'name' => $item->mahasiswa->user->name
+                    'name' => $mhs->user->name ?? '-',
+                    'email' => $mhs->user->email ?? '-',
                 ]
             ];
         });
 
-        // Jika tidak ada dari KRS, ambil dari nilai yang sudah ada (backward compatibility)
-        if ($data->isEmpty()) {
-            $nilaiList = Nilai::where('dosen_id', $dosen->id)
-                ->where('mata_kuliah', $mataKuliahObj->nama_matakuliah)
-                ->with(['mahasiswa.user', 'mahasiswa.kelas'])
-                ->get();
-
-            $data = $nilaiList->map(function ($nilai) {
-                return [
-                    'id' => $nilai->mahasiswa_id,
-                    'mahasiswa_id' => $nilai->mahasiswa_id,
-                    'nama' => $nilai->mahasiswa->user->name,
-                    'nim' => $nilai->mahasiswa->nim,
-                    'kelas' => $nilai->mahasiswa->kelas ? $nilai->mahasiswa->kelas->nama_kelas : '-',
-                    'user' => [
-                        'name' => $nilai->mahasiswa->user->name
-                    ]
-                ];
-            });
-        }
-
         return response()->json([
             'success' => true,
-            'mahasiswa' => $data
+            'mahasiswa' => $mahasiswas,
         ]);
     }
 

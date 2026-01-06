@@ -20,7 +20,7 @@
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">-- Pilih Mata Kuliah --</option>
                         @forelse($dosen->mataKuliah ?? [] as $mk)
-                            <option value="{{ $mk->mata_kuliah }}">
+                            <option value="{{ $mk->id }}">
                                 {{ $mk->mataKuliah->nama_matakuliah ?? '-' }} ({{ $mk->tipe_kelas }})
                             </option>
                         @empty
@@ -96,7 +96,7 @@
         const mataKuliahData = {!! json_encode(
             ($dosen->mataKuliah ?? collect())->map(function ($mk) {
                 return [
-                    'id' => $mk->mata_kuliah,
+                    'id' => $mk->id,
                     'nama' => $mk->mataKuliah->nama_matakuliah,
                     'tipe_kelas' => $mk->tipe_kelas,
                     'sks' => $mk->sks,
