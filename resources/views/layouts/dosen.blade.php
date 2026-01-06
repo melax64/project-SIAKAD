@@ -20,9 +20,15 @@
                     ],
                     [
                         'id' => 'input-nilai',
-                        'label' => 'Input Nilai',
+                        'label' => 'Input Nilai (Form)',
                         'icon' => 'file-spreadsheet',
                         'route' => 'dosen.nilai',
+                    ],
+                    [
+                        'id' => 'input-nilai-tabel',
+                        'label' => 'Input Nilai (Tabel)',
+                        'icon' => 'table',
+                        'route' => 'dosen.nilai.table',
                     ],
                     [
                         'id' => 'daftar-kelas',

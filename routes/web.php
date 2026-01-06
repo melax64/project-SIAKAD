@@ -128,6 +128,11 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('/nilai/{id}/edit', [DosenController::class, 'editNilai'])->name('dosen.nilai.edit');
     Route::put('/nilai/{id}', [DosenController::class, 'updateNilai'])->name('dosen.nilai.update');
     Route::delete('/nilai/{id}', [DosenController::class, 'deleteNilai'])->name('dosen.nilai.delete');
+    
+    // Halaman Input Nilai Tabel (Baru)
+    Route::get('/nilai-tabel', [DosenController::class, 'showNilaiTable'])->name('dosen.nilai.table');
+    Route::post('/nilai-tabel', [DosenController::class, 'storeNilaiTable'])->name('dosen.nilai.table.store');
+    
     Route::get('/bimbingan', fn() => 'Halaman Bimbingan')->name('dosen.bimbingan');
     Route::get('/kelas', fn() => 'Halaman Daftar Kelas')->name('dosen.kelas');
     Route::get('/profil', [DosenController::class, 'showProfil'])->name('dosen.profil');
@@ -152,6 +157,9 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
 
     // API untuk mendapatkan mata kuliah dosen
     Route::get('/api/mata-kuliah', [DosenController::class, 'getMataKuliah'])->name('dosen.api.mata-kuliah');
+    
+    // API untuk get mahasiswa berdasarkan mata kuliah
+    Route::get('/api/mahasiswa-by-matakuliah/{mataKuliah}', [DosenController::class, 'getMahasiswaByMataKuliah'])->name('dosen.api.mahasiswa-by-matakuliah');
 });
 
 
