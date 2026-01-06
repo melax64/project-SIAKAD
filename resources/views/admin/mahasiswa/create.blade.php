@@ -70,9 +70,9 @@
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Program Studi <span class="text-red-500">*</span>
                     </label>
-                    <select name="prodi"
+                    <select id="prodiSelect" name="prodi"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('prodi') border-red-500 @enderror"
-                        required>
+                        required onchange="updateKelas()">
                         <option value="">Pilih Program Studi</option>
                         <option value="Teknik Informatika" {{ old('prodi') === 'Teknik Informatika' ? 'selected' : '' }}>
                             Teknik Informatika</option>
@@ -93,9 +93,9 @@
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Angkatan <span class="text-red-500">*</span>
                     </label>
-                    <select name="angkatan"
+                    <select id="angkatanSelect" name="angkatan"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('angkatan') border-red-500 @enderror"
-                        required>
+                        required onchange="updateKelas()">
                         <option value="">Pilih Angkatan</option>
                         <option value="2025" {{ old('angkatan') === '2025' ? 'selected' : '' }}>2025</option>
                         <option value="2024" {{ old('angkatan') === '2024' ? 'selected' : '' }}>2024</option>
@@ -105,6 +105,21 @@
                         <option value="2020" {{ old('angkatan') === '2020' ? 'selected' : '' }}>2020</option>
                     </select>
                     @error('angkatan')
+                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Kelas -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Kelas <span class="text-red-500">*</span>
+                    </label>
+                    <select id="kelasSelect" name="kelas"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('kelas') border-red-500 @enderror"
+                        required>
+                        <option value="">Pilih Kelas (Pilih Prodi dan Angkatan terlebih dahulu)</option>
+                    </select>
+                    @error('kelas')
                         <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
                     @enderror
                 </div>
@@ -135,6 +150,62 @@
     </div>
 
     <script>
+        // Konfigurasi: 3 kelas per angkatan
+        const KELAS_PER_ANGKATAN = ['A', 'B', 'C'];
+
+        // Mapping nama prodi ke kode singkat
+        const KODE_PRODI = {
+            'Teknik Informatika': 'TI',
+            'Teknologi Rekayasa Multimedia': 'TRMM',
+            'Teknologi Rekayasa Komputer Jaringan': 'TRKJ'
+        };
+
+        // Ketika prodi atau angkatan berubah, update dropdown kelas
+        document.getElementById('prodiSelect').addEventListener('change', updateKelas);
+        document.getElementById('angkatanSelect').addEventListener('change', updateKelas);
+
+        function updateKelas() {
+            const prodiSelect = document.getElementById('prodiSelect');
+            const angkatanSelect = document.getElementById('angkatanSelect');
+            const kelasSelect = document.getElementById('kelasSelect');
+
+            const prodi = prodiSelect.value;
+            const angkatan = angkatanSelect.value;
+
+            // Reset kelas dropdown
+            kelasSelect.innerHTML = '<option value="">Pilih Kelas</option>';
+
+            if (!prodi || !angkatan) {
+                kelasSelect.innerHTML = '<option value="">Pilih Prodi dan Angkatan terlebih dahulu</option>';
+                return;
+            }
+
+            // Ambil kode prodi dari mapping
+            const kodeProdi = KODE_PRODI[prodi] || prodi.substring(0, 2).toUpperCase();
+
+            // Generate kelas: TI-2024-A, TRMM-2024-B, TRKJ-2024-C, etc.
+            KELAS_PER_ANGKATAN.forEach(kelasChar => {
+                const kelasValue = `${kodeProdi}-${angkatan}-${kelasChar}`;
+                const option = document.createElement('option');
+                option.value = kelasValue;
+                option.textContent = kelasValue;
+
+                // Restore selected value jika ada
+                if ('{{ old('kelas') }}' === kelasValue) {
+                    option.selected = true;
+                }
+
+                kelasSelect.appendChild(option);
+            });
+        }
+
+        // Initialize kelas on page load if prodi and angkatan are already set
+        window.addEventListener('load', function() {
+            if (document.getElementById('prodiSelect').value && document.getElementById('angkatanSelect').value) {
+                updateKelas();
+            }
+        });
+
         lucide.createIcons();
     </script>
 @endsection

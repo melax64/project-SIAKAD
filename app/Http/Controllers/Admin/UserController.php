@@ -28,6 +28,7 @@ class UserController extends Controller
             'nim' => 'required|string|unique:mahasiswas,nim',
             'prodi' => 'required|string',
             'angkatan' => 'required|numeric|min:2000|max:' . date('Y'),
+            'kelas' => 'required|string',
         ]);
 
         // Gunakan Transaction agar jika salah satu gagal, semua dibatalkan
@@ -48,6 +49,7 @@ class UserController extends Controller
                 'nim' => $request->nim,
                 'prodi' => $request->prodi,
                 'angkatan' => $request->angkatan,
+                'kelas' => $request->kelas,
             ]);
         });
 

@@ -15,6 +15,7 @@ class Mahasiswa extends Model
         'nim',
         'prodi',
         'angkatan',
+        'kelas',
     ];
 
     // Relasi balik ke User (Opsional tapi bagus ada)

@@ -47,7 +47,10 @@ class MataKuliahSeeder extends Seeder
         ];
 
         foreach ($mataKuliahs as $mk) {
-            MataKuliah::create($mk);
+            MataKuliah::firstOrCreate(
+                ['kode_matakuliah' => $mk['kode_matakuliah']],
+                $mk
+            );
         }
     }
 }

@@ -211,4 +211,88 @@ class DosenController extends Controller
             'mataKuliah' => $mataKuliah
         ]);
     }
+
+    // Menampilkan halaman input nilai
+    public function showInputNilai()
+    {
+        $user = Auth::user();
+        $dosen = Dosen::where('user_id', $user->id)->with('mataKuliah.mataKuliah')->first();
+
+        return view('dosen.nilai-input', [
+            'dosen' => $dosen,
+            'activePage' => 'input-nilai',
+        ]);
+    }
+
+    // Get mahasiswa berdasarkan mata kuliah
+    public function getMahasiswaByMataKuliah($dosenMataKuliahId)
+    {
+        $user = Auth::user();
+        $dosen = Dosen::where('user_id', $user->id)->first();
+
+        // Validasi bahwa mata kuliah ini milik dosen
+        $dosenMataKuliah = \App\Models\DosenMataKuliah::where('id', $dosenMataKuliahId)
+            ->where('dosen_id', $dosen->id)
+            ->first();
+
+        if (!$dosenMataKuliah) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mata kuliah tidak ditemukan'
+            ], 404);
+        }
+
+        // Get mahasiswa untuk mata kuliah ini
+        // Hubungan banyak-ke-banyak via tabel tertentu
+        // Untuk sekarang kita ambil semua mahasiswa (adjust sesuai kebutuhan)
+        $mahasiswas = Mahasiswa::with('user')
+            ->get()
+            ->take(10); // Limit untuk demo
+
+        return response()->json([
+            'success' => true,
+            'mahasiswa' => $mahasiswas
+        ]);
+    }
+
+    // Submit nilai
+    public function submitNilai(Request $request)
+    {
+        $user = Auth::user();
+        $dosen = Dosen::where('user_id', $user->id)->first();
+
+        $nilai = $request->input('nilai', []);
+
+        if (empty($nilai)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada nilai yang disubmit'
+            ], 400);
+        }
+
+        try {
+            foreach ($nilai as $item) {
+                $nilaiModel = Nilai::updateOrCreate(
+                    [
+                        'mahasiswa_id' => $item['mahasiswa_id'],
+                        'dosen_id' => $dosen->id,
+                    ],
+                    [
+                        'nilai_angka' => $item['nilai_angka'],
+                        'nilai_huruf' => $item['nilai_huruf'],
+                    ]
+                );
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Nilai berhasil disimpan'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

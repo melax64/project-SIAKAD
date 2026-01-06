@@ -21,7 +21,7 @@
                     [
                         'id' => 'input-nilai',
                         'label' => 'Input Nilai',
-                        'icon' => 'file-spreadsheet',
+                        'icon' => 'table-2',
                         'route' => 'dosen.nilai',
                     ],
                     [
