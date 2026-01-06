@@ -26,6 +26,69 @@
             </div>
         @endif
 
+        <!-- Filter Section -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <form method="GET" action="{{ route('admin.mahasiswa') }}" class="flex flex-wrap gap-4 items-end">
+                <div class="flex-1 min-w-[200px]">
+                    <label for="prodi" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Program Studi
+                    </label>
+                    <select name="prodi" id="prodi"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                        <option value="">Semua Prodi</option>
+                        @foreach($allProdi as $prodi)
+                            <option value="{{ $prodi }}" {{ request('prodi') == $prodi ? 'selected' : '' }}>
+                                {{ $prodi }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex-1 min-w-[200px]">
+                    <label for="angkatan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Angkatan
+                    </label>
+                    <select name="angkatan" id="angkatan"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                        <option value="">Semua Angkatan</option>
+                        @foreach($allAngkatan as $angkatan)
+                            <option value="{{ $angkatan }}" {{ request('angkatan') == $angkatan ? 'selected' : '' }}>
+                                {{ $angkatan }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex-1 min-w-[200px]">
+                    <label for="kelas" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Kelas
+                    </label>
+                    <select name="kelas" id="kelas"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                        <option value="">Semua Kelas</option>
+                        @foreach($allKelas as $kelas)
+                            <option value="{{ $kelas->id }}" {{ request('kelas') == $kelas->id ? 'selected' : '' }}>
+                                {{ $kelas->nama_kelas }} - {{ $kelas->prodi }} {{ $kelas->angkatan }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                        <i data-lucide="filter" class="w-4 h-4 inline mr-1"></i>
+                        Filter
+                    </button>
+                    <a href="{{ route('admin.mahasiswa') }}"
+                        class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition font-medium">
+                        <i data-lucide="x" class="w-4 h-4 inline mr-1"></i>
+                        Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+
         <!-- Tabel Data Mahasiswa -->
         <div
             class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">

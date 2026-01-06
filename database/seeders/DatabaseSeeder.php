@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             DosenSeeder::class,
             KelasSeeder::class,
             MahasiswaSeeder::class,
+            MahasiswaMataKuliahSeeder::class, // Seeder KRS
         ]);
     }
     // public function run(): void

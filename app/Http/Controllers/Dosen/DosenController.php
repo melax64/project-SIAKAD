@@ -330,16 +330,25 @@ class DosenController extends Controller
 
         try {
             foreach ($nilai as $item) {
+                // Get mata kuliah name from dosen_mata_kuliah ID
+                $dosenMataKuliah = \App\Models\DosenMataKuliah::find($item['mata_kuliah']);
+                
+                if (!$dosenMataKuliah) {
+                    continue; // Skip if not found
+                }
+
                 // Hitung nilai akhir dari nilai_angka
                 // Asumsi nilai_angka adalah nilai akhir (bisa disesuaikan)
                 $nilaiModel = Nilai::updateOrCreate(
                     [
                         'mahasiswa_id' => $item['mahasiswa_id'],
                         'dosen_id' => $dosen->id,
-                        'mata_kuliah' => $item['mata_kuliah'] ?? '', // Ambil dari request atau dari dosenMataKuliah
+                        'mata_kuliah' => $dosenMataKuliah->mata_kuliah, // Use mata_kuliah name
                     ],
                     [
-                        'uas' => $item['nilai_angka'], // Simpan nilai ke UAS (bisa disesuaikan)
+                        'nilai_angka' => $item['nilai_angka'],
+                        'nilai_huruf' => $item['nilai_huruf'],
+                        'uas' => $item['nilai_angka'], // Simpan nilai ke UAS juga (bisa disesuaikan)
                     ]
                 );
             }

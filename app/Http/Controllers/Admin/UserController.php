@@ -116,13 +116,35 @@ class UserController extends Controller
 
     // --- FUNGSI MENAMPILKAN DATA (INDEX) ---
 
-    public function indexMahasiswa()
+    public function indexMahasiswa(Request $request)
     {
-        // Ambil semua data mahasiswa gabung dengan data user-nya (nama & email)
-        $mahasiswas = \App\Models\Mahasiswa::with('user')->get();
+        // Query mahasiswa dengan filter
+        $query = \App\Models\Mahasiswa::with(['user', 'kelas']);
+
+        // Filter by prodi
+        if ($request->filled('prodi')) {
+            $query->where('prodi', $request->prodi);
+        }
+
+        // Filter by angkatan
+        if ($request->filled('angkatan')) {
+            $query->where('angkatan', $request->angkatan);
+        }
+
+        // Filter by kelas
+        if ($request->filled('kelas')) {
+            $query->where('kelas_id', $request->kelas);
+        }
+
+        $mahasiswas = $query->orderBy('prodi')->orderBy('angkatan')->get();
+
+        // Get unique values for filter dropdowns
+        $allProdi = \App\Models\Mahasiswa::select('prodi')->distinct()->pluck('prodi');
+        $allAngkatan = \App\Models\Mahasiswa::select('angkatan')->distinct()->orderByDesc('angkatan')->pluck('angkatan');
+        $allKelas = \App\Models\Kelas::orderBy('nama_kelas')->get();
 
         // Kirim data ke view index
-        return view('admin.mahasiswa.index', compact('mahasiswas'), ['activePage' => 'data-mahasiswa']);
+        return view('admin.mahasiswa.index', compact('mahasiswas', 'allProdi', 'allAngkatan', 'allKelas'), ['activePage' => 'data-mahasiswa']);
     }
 
     public function indexDosen()
