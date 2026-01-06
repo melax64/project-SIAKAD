@@ -13,7 +13,7 @@
 
         <!-- Filter Mata Kuliah -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Mata Kuliah</label>
                     <select id="matkulSelect"
@@ -30,6 +30,17 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Prodi</label>
+                    <select id="prodiSelect"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Semua Prodi --</option>
+                        <option value="TI">Teknik Informatika</option>
+                        <option value="TRMM">Teknologi Rekayasa Multimedia</option>
+                        <option value="TRKJ">Teknologi Rekayasa Komputer Jaringan</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipe Kelas</label>
                     <input type="text" id="tipeKelas" readonly
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-gray-400 bg-gray-100"
@@ -41,6 +52,14 @@
                     <input type="text" id="sks" readonly
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-gray-400 bg-gray-100"
                         placeholder="Akan otomatis terisi">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Kelas</label>
+                    <select id="kelasSelect"
+                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Semua Kelas --</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -125,6 +144,10 @@
                     '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Pilih mata kuliah terlebih dahulu</td></tr>';
                 document.getElementById('tipeKelas').value = '';
                 document.getElementById('sks').value = '';
+                // reset kelas dropdown and stored data
+                const ks = document.getElementById('kelasSelect');
+                if (ks) ks.innerHTML = '<option value="">-- Semua Kelas --</option>';
+                allMahasiswaData = [];
                 return;
             }
 
@@ -133,16 +156,35 @@
             document.getElementById('tipeKelas').value = selected.tipe_kelas;
             document.getElementById('sks').value = selected.sks;
 
-            // Load mahasiswa untuk mata kuliah ini via AJAX
-            loadMahasiswaByMataKuliah(selectedId);
+            // Load mahasiswa untuk mata kuliah ini via AJAX, include prodi if selected
+            const prodi = document.getElementById('prodiSelect')?.value || '';
+            loadMahasiswaByMataKuliah(selectedId, prodi);
         });
 
+        // When prodi changes, if a mata kuliah is selected reload students with prodi filter
+        document.getElementById('prodiSelect').addEventListener('change', function() {
+            const matkulId = document.getElementById('matkulSelect').value;
+            const prodi = this.value;
+            if (!matkulId) return; // nothing to update yet
+            loadMahasiswaByMataKuliah(matkulId, prodi);
+        });
+
+        // Global storage for fetched mahasiswa (per matakuliah)
+        let allMahasiswaData = [];
+
         // Load mahasiswa berdasarkan mata kuliah
-        function loadMahasiswaByMataKuliah(dosenMataKuliahId) {
-            fetch(`/dosen/api/mahasiswa-by-matakuliah/${dosenMataKuliahId}`)
+        function loadMahasiswaByMataKuliah(dosenMataKuliahId, prodi) {
+            let url = `/dosen/api/mahasiswa-by-matakuliah/${dosenMataKuliahId}`;
+            if (prodi) {
+                url += `?prodi=${encodeURIComponent(prodi)}`;
+            }
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    renderMahasiswaTable(data.mahasiswa || []);
+                    allMahasiswaData = data.mahasiswa || [];
+                    populateKelasDropdown(allMahasiswaData, data.kelasList || [], data.allKelasPatterns || []);
+                    // default: show all (or first kelas if desired)
+                    renderMahasiswaTable(allMahasiswaData);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -150,6 +192,76 @@
                         '<tr><td colspan="6" class="px-4 py-8 text-center text-red-500">Error loading data</td></tr>';
                 });
         }
+
+        // Populate kelas dropdown. Priority:
+        // 1) server-provided allKelasPatterns (global)
+        // 2) server-provided kelasList (from DB)
+        // 3) derived from mahasiswa array
+        function populateKelasDropdown(mahasiswas, kelasList, allKelasPatterns) {
+            const kelasSelect = document.getElementById('kelasSelect');
+            kelasSelect.innerHTML = '<option value="">-- Semua Kelas --</option>';
+
+            let items = [];
+            if (Array.isArray(allKelasPatterns) && allKelasPatterns.length > 0) {
+                items = allKelasPatterns.slice();
+            } else if (Array.isArray(kelasList) && kelasList.length > 0) {
+                items = kelasList.slice();
+            } else if (Array.isArray(mahasiswas) && mahasiswas.length > 0) {
+                const kelasSet = new Set();
+                mahasiswas.forEach(m => {
+                    if (m.kelas) kelasSet.add(m.kelas);
+                });
+                items = Array.from(kelasSet);
+            }
+
+            items.sort();
+            items.forEach(k => {
+                const opt = document.createElement('option');
+                opt.value = k;
+                opt.textContent = k;
+                kelasSelect.appendChild(opt);
+            });
+        }
+
+        // When kelas selected, try server-side filtered fetch if mata kuliah selected,
+        // otherwise fall back to client-side filtering
+        document.getElementById('kelasSelect').addEventListener('change', function() {
+            const selectedKelas = this.value;
+            const matkulId = document.getElementById('matkulSelect').value;
+
+            if (!matkulId) {
+                // no mata kuliah selected, just filter client-side
+                if (!selectedKelas) return renderMahasiswaTable(allMahasiswaData);
+                const filtered = allMahasiswaData.filter(m => m.kelas === selectedKelas);
+                return renderMahasiswaTable(filtered);
+            }
+
+            // If kelas empty, load all cached data if available
+            if (!selectedKelas) {
+                if (allMahasiswaData.length > 0) return renderMahasiswaTable(allMahasiswaData);
+                // otherwise fetch full list from server
+                return loadMahasiswaByMataKuliah(matkulId);
+            }
+
+            // Fetch filtered mahasiswa from server for the selected kelas
+            // include prodi when requesting filtered kelas results
+            const prodiParam = document.getElementById('prodiSelect')?.value || '';
+            let url = `/dosen/api/mahasiswa-by-matakuliah/${matkulId}?kelas=${encodeURIComponent(selectedKelas)}`;
+            if (prodiParam) url += `&prodi=${encodeURIComponent(prodiParam)}`;
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    allMahasiswaData = data.mahasiswa || [];
+                    populateKelasDropdown(allMahasiswaData, data.kelasList || [], data.allKelasPatterns || []);
+                    renderMahasiswaTable(allMahasiswaData);
+                })
+                .catch(err => {
+                    console.error('Error fetching filtered mahasiswa:', err);
+                    // fallback to client-side filter
+                    const filtered = allMahasiswaData.filter(m => m.kelas === selectedKelas);
+                    renderMahasiswaTable(filtered);
+                });
+        });
 
         // Render tabel mahasiswa
         function renderMahasiswaTable(mahasiswas) {

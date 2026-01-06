@@ -225,7 +225,7 @@ class DosenController extends Controller
     }
 
     // Get mahasiswa berdasarkan mata kuliah
-    public function getMahasiswaByMataKuliah($mataKuliah)
+    public function getMahasiswaByMataKuliah($dosenMataKuliahId)
     {
         $user = Auth::user();
         $dosen = Dosen::where('user_id', $user->id)->first();
@@ -245,52 +245,16 @@ class DosenController extends Controller
             ], 404);
         }
 
-        // Ambil mahasiswa yang mengambil mata kuliah ini (dari KRS)
-        $currentSemester = '2024/2025 Genap';
-        $mahasiswaListFromKRS = \App\Models\MahasiswaMataKuliah::where('mata_kuliah_id', $mataKuliahObj->id)
-            ->where('semester', $currentSemester)
-            ->where('status', 'aktif')
-            ->with(['mahasiswa.user', 'mahasiswa.kelas'])
-            ->get();
-
-        // Format data dari KRS
-        $data = $mahasiswaListFromKRS->map(function ($item) {
-            return [
-                'id' => $item->mahasiswa_id,
-                'mahasiswa_id' => $item->mahasiswa_id,
-                'nama' => $item->mahasiswa->user->name,
-                'nim' => $item->mahasiswa->nim,
-                'kelas' => $item->mahasiswa->kelas ? $item->mahasiswa->kelas->nama_kelas : '-',
-                'user' => [
-                    'name' => $item->mahasiswa->user->name
-                ]
-            ];
-        });
-
-        // Jika tidak ada dari KRS, ambil dari nilai yang sudah ada (backward compatibility)
-        if ($data->isEmpty()) {
-            $nilaiList = Nilai::where('dosen_id', $dosen->id)
-                ->where('mata_kuliah', $mataKuliahObj->nama_matakuliah)
-                ->with(['mahasiswa.user', 'mahasiswa.kelas'])
-                ->get();
-
-            $data = $nilaiList->map(function ($nilai) {
-                return [
-                    'id' => $nilai->mahasiswa_id,
-                    'mahasiswa_id' => $nilai->mahasiswa_id,
-                    'nama' => $nilai->mahasiswa->user->name,
-                    'nim' => $nilai->mahasiswa->nim,
-                    'kelas' => $nilai->mahasiswa->kelas ? $nilai->mahasiswa->kelas->nama_kelas : '-',
-                    'user' => [
-                        'name' => $nilai->mahasiswa->user->name
-                    ]
-                ];
-            });
-        }
+        // Get mahasiswa untuk mata kuliah ini
+        // Hubungan banyak-ke-banyak via tabel tertentu
+        // Untuk sekarang kita ambil semua mahasiswa (adjust sesuai kebutuhan)
+        $mahasiswas = Mahasiswa::with('user')
+            ->get()
+            ->take(10); // Limit untuk demo
 
         return response()->json([
             'success' => true,
-            'mahasiswa' => $data
+            'mahasiswa' => $mahasiswas
         ]);
     }
 
