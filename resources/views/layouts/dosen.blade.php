@@ -19,12 +19,6 @@
                         'route' => 'dosen.dashboard',
                     ],
                     [
-                        'id' => 'jadwal-mengajar',
-                        'label' => 'Jadwal Mengajar',
-                        'icon' => 'calendar',
-                        'route' => 'dosen.jadwal',
-                    ],
-                    [
                         'id' => 'input-nilai',
                         'label' => 'Input Nilai',
                         'icon' => 'file-spreadsheet',

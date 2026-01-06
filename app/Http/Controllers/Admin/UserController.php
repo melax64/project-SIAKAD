@@ -16,7 +16,7 @@ class UserController extends Controller
 
     public function createMahasiswa()
     {
-        return view('admin.mahasiswa.create'); // Arahkan ke view form
+        return view('admin.mahasiswa.create', ['activePage' => 'data-mahasiswa']); // Arahkan ke view form
     }
 
     public function storeMahasiswa(Request $request)
@@ -59,7 +59,7 @@ class UserController extends Controller
     public function createDosen()
     {
         $mataKuliahs = \App\Models\MataKuliah::orderBy('kode_matakuliah')->get();
-        return view('admin.dosen.create', compact('mataKuliahs'));
+        return view('admin.dosen.create', compact('mataKuliahs'), ['activePage' => 'data-dosen']);
     }
 
     public function storeDosen(Request $request)
@@ -117,7 +117,7 @@ class UserController extends Controller
         $mahasiswas = \App\Models\Mahasiswa::with('user')->get();
 
         // Kirim data ke view index
-        return view('admin.mahasiswa.index', compact('mahasiswas'));
+        return view('admin.mahasiswa.index', compact('mahasiswas'), ['activePage' => 'data-mahasiswa']);
     }
 
     public function indexDosen()

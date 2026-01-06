@@ -12,13 +12,13 @@ class MataKuliahController extends Controller
     public function index()
     {
         $mataKuliahs = MataKuliah::orderBy('kode_matakuliah')->paginate(10);
-        return view('admin.matakuliah.index', compact('mataKuliahs'));
+        return view('admin.matakuliah.index', compact('mataKuliahs'), ['activePage' => 'mata-kuliah']);
     }
 
     // Form create
     public function create()
     {
-        return view('admin.matakuliah.create');
+        return view('admin.matakuliah.create', ['activePage' => 'mata-kuliah']);
     }
 
     // Simpan mata kuliah baru

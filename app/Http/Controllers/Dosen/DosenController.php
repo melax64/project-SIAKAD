@@ -20,7 +20,8 @@ class DosenController extends Controller
         $dosen = Dosen::where('user_id', $user->id)->first();
 
         return view('dosen.profil', [
-            'dosen' => $dosen
+            'dosen' => $dosen,
+            'activePage' => 'profil',
         ]);
     }
 
@@ -64,7 +65,8 @@ class DosenController extends Controller
             ->get();
 
         return view('dosen.nilai', [
-            'nilaiList' => $nilaiList
+            'nilaiList' => $nilaiList,
+            'activePage' => 'input-nilai',
         ]);
     }
 

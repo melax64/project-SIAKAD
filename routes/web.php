@@ -68,7 +68,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/mahasiswa/create', [UserController::class, 'createMahasiswa'])->name('admin.mahasiswa.create');
     Route::post('/mahasiswa', [UserController::class, 'storeMahasiswa'])->name('admin.mahasiswa.store');
     Route::delete('/mahasiswa/{id}', [UserController::class, 'destroyMahasiswa'])->name('admin.mahasiswa.destroy');
-    
+
     Route::get('/dosen/create', [UserController::class, 'createDosen'])->name('admin.dosen.create');
     Route::post('/dosen', [UserController::class, 'storeDosen'])->name('admin.dosen.store');
     Route::delete('/dosen/{id}', [UserController::class, 'destroyDosen'])->name('admin.dosen.destroy');
@@ -88,7 +88,6 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
 
     // Dummy Routes (Penyelamat)
     Route::get('/matakuliah-dummy', fn() => 'Coming Soon')->name('admin.matakuliah');
-    Route::get('/jadwal-dummy', fn() => 'Coming Soon')->name('admin.jadwal');
     Route::get('/krs-dummy', fn() => 'Coming Soon')->name('admin.krs');
     Route::get('/nilai-dummy', fn() => 'Coming Soon')->name('admin.nilai');
 });
@@ -119,7 +118,6 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
     })->name('dosen.dashboard');
 
     // Dummy Routes Dosen
-    Route::get('/jadwal', fn() => 'Halaman Jadwal')->name('dosen.jadwal');
     Route::get('/nilai', [DosenController::class, 'showNilai'])->name('dosen.nilai');
     Route::post('/nilai', [DosenController::class, 'storeNilai'])->name('dosen.nilai.store');
     Route::get('/nilai/{id}/edit', [DosenController::class, 'editNilai'])->name('dosen.nilai.edit');
@@ -166,8 +164,8 @@ Route::prefix('mahasiswa')->middleware(['auth', 'role:mahasiswa'])->group(functi
         ]);
     })->name('mahasiswa.dashboard');
 
-    Route::get('/krs', fn() => 'Halaman KRS')->name('mahasiswa.krs');
-    Route::get('/jadwal', fn() => 'Halaman Jadwal')->name('mahasiswa.jadwal');
+    Route::get('/krs', [MahasiswaController::class, 'showKRS'])->name('mahasiswa.krs');
+    Route::get('/krs/print', [MahasiswaController::class, 'printKRS'])->name('mahasiswa.krs.print');
     Route::get('/nilai', [MahasiswaController::class, 'showNilai'])->name('mahasiswa.nilai');
     Route::get('/profil', [MahasiswaController::class, 'showProfil'])->name('mahasiswa.profil');
     Route::get('/profil/edit', [MahasiswaController::class, 'editProfil'])->name('mahasiswa.profil.edit');

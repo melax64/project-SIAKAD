@@ -40,7 +40,8 @@ class MahasiswaController extends Controller
         return view('mahasiswa.nilai', [
             'nilaiList' => $nilaiList,
             'averageNilai' => $averageNilai,
-            'totalSks' => $nilaiList->count() * 3 // Assuming 3 SKS per subject (you can adjust)
+            'totalSks' => $nilaiList->count() * 3,
+            'activePage' => 'nilai',
         ]);
     }
 
@@ -52,7 +53,8 @@ class MahasiswaController extends Controller
 
         return view('mahasiswa.profil', [
             'mahasiswa' => $mahasiswa,
-            'user' => $user
+            'user' => $user,
+            'activePage' => 'profil',
         ]);
     }
 
@@ -64,7 +66,8 @@ class MahasiswaController extends Controller
 
         return view('mahasiswa.profil-edit', [
             'mahasiswa' => $mahasiswa,
-            'user' => $user
+            'user' => $user,
+            'activePage' => 'profil',
         ]);
     }
 
@@ -86,5 +89,51 @@ class MahasiswaController extends Controller
 
         return redirect()->route('mahasiswa.profil')
             ->with('success', 'Profil berhasil diperbarui!');
+    }
+
+    // Show KRS (Kartu Rencana Studi)
+    public function showKRS()
+    {
+        $user = Auth::user();
+        $mahasiswa = Mahasiswa::where('user_id', $user->id)->first();
+
+        // Ambil nilai (mata kuliah yang sudah diambil)
+        $nilaiList = Nilai::where('mahasiswa_id', $mahasiswa->id)
+            ->with(['dosen.user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Hitung total SKS
+        $totalSKS = $nilaiList->sum('sks');
+
+        return view('mahasiswa.krs', [
+            'mahasiswa' => $mahasiswa,
+            'nilaiList' => $nilaiList,
+            'totalSKS' => $totalSKS,
+            'activePage' => 'isi-krs',
+        ]);
+    }
+
+    // Print KRS (untuk PDF atau cetak)
+    public function printKRS()
+    {
+        $user = Auth::user();
+        $mahasiswa = Mahasiswa::where('user_id', $user->id)->first();
+
+        // Ambil nilai (mata kuliah yang sudah diambil)
+        $nilaiList = Nilai::where('mahasiswa_id', $mahasiswa->id)
+            ->with(['dosen.user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Hitung total SKS
+        $totalSKS = $nilaiList->sum('sks');
+
+        return view('mahasiswa.krs-print', [
+            'mahasiswa' => $mahasiswa,
+            'nilaiList' => $nilaiList,
+            'totalSKS' => $totalSKS,
+            'activePage' => 'cetak-krs',
+        ]);
     }
 }
