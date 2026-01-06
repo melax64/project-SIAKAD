@@ -60,7 +60,7 @@
                                 <td class="px-6 py-4">
                                     <span
                                         class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">
-                                        {{ $mhs->kelas ?? '-' }}
+                                        {{ $mhs->kelas ? $mhs->kelas->nama_kelas : '-' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ $mhs->user->email ?? '-' }}</td>

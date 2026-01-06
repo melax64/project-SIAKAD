@@ -111,7 +111,7 @@
                                     <td class="px-6 py-4">
                                         <span
                                             class="inline-block px-3 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 rounded-full text-xs font-medium">
-                                            {{ $mhs->kelas ?? '-' }}
+                                            {{ $mhs->kelas ? $mhs->kelas->nama_kelas : '-' }}
                                         </span>
                                     </td>
                                 </tr>

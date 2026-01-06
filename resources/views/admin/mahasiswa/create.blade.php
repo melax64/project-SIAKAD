@@ -114,12 +114,12 @@
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         Kelas <span class="text-red-500">*</span>
                     </label>
-                    <select id="kelasSelect" name="kelas"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('kelas') border-red-500 @enderror"
+                    <select id="kelasSelect" name="kelas_id"
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('kelas_id') border-red-500 @enderror"
                         required>
                         <option value="">Pilih Kelas (Pilih Prodi dan Angkatan terlebih dahulu)</option>
                     </select>
-                    @error('kelas')
+                    @error('kelas_id')
                         <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
                     @enderror
                 </div>
@@ -150,21 +150,11 @@
     </div>
 
     <script>
-        // Konfigurasi: 3 kelas per angkatan
-        const KELAS_PER_ANGKATAN = ['A', 'B', 'C'];
-
-        // Mapping nama prodi ke kode singkat
-        const KODE_PRODI = {
-            'Teknik Informatika': 'TI',
-            'Teknologi Rekayasa Multimedia': 'TRMM',
-            'Teknologi Rekayasa Komputer Jaringan': 'TRKJ'
-        };
-
-        // Ketika prodi atau angkatan berubah, update dropdown kelas
+        // Update kelas dropdown based on prodi and angkatan
         document.getElementById('prodiSelect').addEventListener('change', updateKelas);
         document.getElementById('angkatanSelect').addEventListener('change', updateKelas);
 
-        function updateKelas() {
+        async function updateKelas() {
             const prodiSelect = document.getElementById('prodiSelect');
             const angkatanSelect = document.getElementById('angkatanSelect');
             const kelasSelect = document.getElementById('kelasSelect');
@@ -180,23 +170,25 @@
                 return;
             }
 
-            // Ambil kode prodi dari mapping
-            const kodeProdi = KODE_PRODI[prodi] || prodi.substring(0, 2).toUpperCase();
+            try {
+                // Fetch kelas dari database berdasarkan prodi dan angkatan
+                const response = await fetch(`/api/kelas?prodi=${encodeURIComponent(prodi)}&angkatan=${angkatan}`);
+                const data = await response.json();
 
-            // Generate kelas: TI-2024-A, TRMM-2024-B, TRKJ-2024-C, etc.
-            KELAS_PER_ANGKATAN.forEach(kelasChar => {
-                const kelasValue = `${kodeProdi}-${angkatan}-${kelasChar}`;
-                const option = document.createElement('option');
-                option.value = kelasValue;
-                option.textContent = kelasValue;
-
-                // Restore selected value jika ada
-                if ('{{ old('kelas') }}' === kelasValue) {
-                    option.selected = true;
+                if (data.success && data.kelas.length > 0) {
+                    data.kelas.forEach(kelas => {
+                        const option = document.createElement('option');
+                        option.value = kelas.id;
+                        option.textContent = `${kelas.nama_kelas} (${kelas.prodi} ${kelas.angkatan})`;
+                        kelasSelect.appendChild(option);
+                    });
+                } else {
+                    kelasSelect.innerHTML = '<option value="">Tidak ada kelas untuk kombinasi prodi dan angkatan ini</option>';
                 }
-
-                kelasSelect.appendChild(option);
-            });
+            } catch (error) {
+                console.error('Error fetching kelas:', error);
+                kelasSelect.innerHTML = '<option value="">Error memuat kelas</option>';
+            }
         }
 
         // Initialize kelas on page load if prodi and angkatan are already set

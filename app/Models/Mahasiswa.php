@@ -15,12 +15,24 @@ class Mahasiswa extends Model
         'nim',
         'prodi',
         'angkatan',
-        'kelas',
+        'kelas_id',
     ];
 
-    // Relasi balik ke User (Opsional tapi bagus ada)
+    // Relasi balik ke User
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Relasi ke Kelas
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
+
+    // Relasi ke Nilai
+    public function nilais()
+    {
+        return $this->hasMany(Nilai::class);
     }
 }

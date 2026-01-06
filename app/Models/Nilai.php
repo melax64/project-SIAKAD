@@ -17,4 +17,10 @@ class Nilai extends Model
     {
         return $this->belongsTo(Mahasiswa::class);
     }
+
+    // Relasi ke Kelas melalui Mahasiswa
+    public function kelas()
+    {
+        return $this->belongsThrough(Kelas::class, Mahasiswa::class);
+    }
 }

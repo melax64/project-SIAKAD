@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Mahasiswa;
 use App\Models\Dosen;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -22,34 +23,36 @@ class UserController extends Controller
     public function storeMahasiswa(Request $request)
     {
         // 1. Validasi
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'nim' => 'required|string|unique:mahasiswas,nim',
             'prodi' => 'required|string',
             'angkatan' => 'required|numeric|min:2000|max:' . date('Y'),
-            'kelas' => 'required|string',
+            'kelas_id' => 'required|exists:kelas,id',
         ]);
 
         // Gunakan Transaction agar jika salah satu gagal, semua dibatalkan
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($validated) {
 
             // 2. Buat Akun User (Untuk Login)
             $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
+                'name' => $validated['name'],
+                'email' => $validated['email'],
                 // Password default adalah NIM (bisa diganti logicnya)
-                'password' => Hash::make($request->nim),
+                'password' => Hash::make($validated['nim']),
                 'role' => 'mahasiswa', // Pastikan kolom role ada di tabel users
             ]);
 
             // 3. Buat Data Profil Mahasiswa
+            $kelas = Kelas::find($validated['kelas_id']);
+            
             Mahasiswa::create([
                 'user_id' => $user->id, // Relasi ke tabel user
-                'nim' => $request->nim,
-                'prodi' => $request->prodi,
-                'angkatan' => $request->angkatan,
-                'kelas' => $request->kelas,
+                'nim' => $validated['nim'],
+                'prodi' => $validated['prodi'],
+                'angkatan' => $validated['angkatan'],
+                'kelas_id' => $validated['kelas_id'],
             ]);
         });
 

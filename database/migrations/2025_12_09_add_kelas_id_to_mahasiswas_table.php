@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('mahasiswas', function (Blueprint $table) {
-            $table->string('kelas')->nullable()->after('angkatan');
+            // Tambah kolom kelas_id dengan foreign key
+            $table->foreignId('kelas_id')->nullable()->after('angkatan')->constrained('kelas')->onDelete('set null');
         });
     }
 
@@ -22,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('mahasiswas', function (Blueprint $table) {
-            $table->dropColumn('kelas');
+            $table->dropForeignIdFor('Kelas');
+            $table->dropColumn('kelas_id');
         });
     }
 };

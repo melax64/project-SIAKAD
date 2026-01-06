@@ -225,33 +225,45 @@ class DosenController extends Controller
     }
 
     // Get mahasiswa berdasarkan mata kuliah
-    public function getMahasiswaByMataKuliah($dosenMataKuliahId)
+    public function getMahasiswaByMataKuliah($mataKuliah)
     {
         $user = Auth::user();
         $dosen = Dosen::where('user_id', $user->id)->first();
 
-        // Validasi bahwa mata kuliah ini milik dosen
-        $dosenMataKuliah = \App\Models\DosenMataKuliah::where('id', $dosenMataKuliahId)
-            ->where('dosen_id', $dosen->id)
+        // Validasi bahwa dosen mengajar mata kuliah ini
+        $dosenMataKuliah = \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)
+            ->where('mata_kuliah', $mataKuliah)
             ->first();
 
         if (!$dosenMataKuliah) {
             return response()->json([
                 'success' => false,
-                'message' => 'Mata kuliah tidak ditemukan'
-            ], 404);
+                'message' => 'Anda tidak mengajar mata kuliah ini'
+            ], 403);
         }
 
-        // Get mahasiswa untuk mata kuliah ini
-        // Hubungan banyak-ke-banyak via tabel tertentu
-        // Untuk sekarang kita ambil semua mahasiswa (adjust sesuai kebutuhan)
-        $mahasiswas = Mahasiswa::with('user')
-            ->get()
-            ->take(10); // Limit untuk demo
+        // Get mahasiswa dengan nilai yang sudah ada untuk mata kuliah ini
+        $nilaiList = Nilai::where('dosen_id', $dosen->id)
+            ->where('mata_kuliah', $mataKuliah)
+            ->with(['mahasiswa.user'])
+            ->get();
+
+        // Format data untuk response
+        $data = $nilaiList->map(function ($nilai) {
+            return [
+                'id' => $nilai->id,
+                'mahasiswa_id' => $nilai->mahasiswa_id,
+                'nama' => $nilai->mahasiswa->user->name,
+                'nim' => $nilai->mahasiswa->nim,
+                'kelas' => $nilai->mahasiswa->kelas ? $nilai->mahasiswa->kelas->nama_kelas : '-',
+                'nilai_angka' => $nilai->nilai_akhir ?? 0,
+                'nilai_huruf' => $nilai->nilai_huruf ?? '-',
+            ];
+        });
 
         return response()->json([
             'success' => true,
-            'mahasiswa' => $mahasiswas
+            'mahasiswa' => $data
         ]);
     }
 
@@ -311,6 +323,36 @@ class DosenController extends Controller
         return view('dosen.nilai-table', [
             'mataKuliahList' => $mataKuliahList,
             'activePage' => 'input-nilai-tabel',
+        ]);
+    }
+
+    // Daftar Kelas
+    public function showKelas(Request $request)
+    {
+        $query = Mahasiswa::query();
+
+        // Filter berdasarkan prodi
+        if ($request->filled('prodi')) {
+            $query->where('prodi', $request->prodi);
+        }
+
+        // Filter berdasarkan angkatan
+        if ($request->filled('angkatan')) {
+            $query->where('angkatan', $request->angkatan);
+        }
+
+        // Filter berdasarkan kelas
+        if ($request->filled('kelas')) {
+            $query->whereHas('kelas', function ($q) use ($request) {
+                $q->where('nama_kelas', 'like', $request->kelas . '%');
+            });
+        }
+
+        $mahasiswas = $query->with(['user', 'kelas'])->get();
+
+        return view('dosen.kelas', [
+            'mahasiswas' => $mahasiswas,
+            'activePage' => 'daftar-kelas',
         ]);
     }
 

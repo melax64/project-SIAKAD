@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Admin\UserController;
@@ -127,7 +128,7 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('/nilai-tabel', [DosenController::class, 'showNilaiTable'])->name('dosen.nilai.table');
     Route::post('/nilai-tabel', [DosenController::class, 'storeNilaiTable'])->name('dosen.nilai.table.store');
     Route::get('/bimbingan', fn() => 'Halaman Bimbingan')->name('dosen.bimbingan');
-    Route::get('/kelas', fn() => 'Halaman Daftar Kelas')->name('dosen.kelas');
+    Route::get('/kelas', [DosenController::class, 'showKelas'])->name('dosen.kelas');
     Route::get('/profil', [DosenController::class, 'showProfil'])->name('dosen.profil');
     Route::put('/profil', [DosenController::class, 'updateProfil'])->name('dosen.profil.update');
 
@@ -151,8 +152,7 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
     // API untuk mendapatkan mata kuliah dosen
     Route::get('/api/mata-kuliah', [DosenController::class, 'getMataKuliah'])->name('dosen.api.mata-kuliah');
 
-    // API untuk Input Nilai
-    Route::get('/api/mahasiswa-by-matakuliah/{dosenMataKuliahId}', [DosenController::class, 'getMahasiswaByMataKuliah'])->name('dosen.api.mahasiswa-by-matakuliah');
+    // API untuk Input Nilai (menerima nama mata kuliah)
     Route::get('/api/mahasiswa-by-matakuliah/{mataKuliah}', [DosenController::class, 'getMahasiswaByMataKuliah'])->name('dosen.api.mahasiswa-by-matakuliah');
     Route::post('/api/submit-nilai', [DosenController::class, 'submitNilai'])->name('dosen.api.submit-nilai');
 });
@@ -178,6 +178,31 @@ Route::prefix('mahasiswa')->middleware(['auth', 'role:mahasiswa'])->group(functi
     Route::get('/profil', [MahasiswaController::class, 'showProfil'])->name('mahasiswa.profil');
     Route::get('/profil/edit', [MahasiswaController::class, 'editProfil'])->name('mahasiswa.profil.edit');
     Route::put('/profil', [MahasiswaController::class, 'updateProfil'])->name('mahasiswa.profil.update');
+});
+
+// =========================================================================
+// 7. PUBLIC API ROUTES
+// =========================================================================
+Route::get('/api/kelas', function (Request $request) {
+    $prodi = $request->query('prodi');
+    $angkatan = $request->query('angkatan');
+
+    $query = \App\Models\Kelas::query();
+
+    if ($prodi) {
+        $query->where('prodi', $prodi);
+    }
+
+    if ($angkatan) {
+        $query->where('angkatan', $angkatan);
+    }
+
+    $kelas = $query->orderBy('nama_kelas')->get();
+
+    return response()->json([
+        'success' => true,
+        'kelas' => $kelas
+    ]);
 });
 
 require __DIR__ . '/auth.php';
