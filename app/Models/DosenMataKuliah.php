@@ -19,4 +19,9 @@ class DosenMataKuliah extends Model
     {
         return $this->belongsTo(Dosen::class);
     }
+
+    public function mataKuliah()
+    {
+        return $this->belongsTo(MataKuliah::class, 'mata_kuliah', 'nama_matakuliah');
+    }
 }

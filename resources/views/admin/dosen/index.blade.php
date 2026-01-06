@@ -42,7 +42,7 @@
                             <div class="flex flex-wrap gap-1">
                                 @foreach($dsn->mataKuliah as $mk)
                                     <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                        {{ $mk->mataKuliah->nama_mk ?? '-' }}
+                                        {{ $mk->mataKuliah->nama_matakuliah ?? '-' }}
                                     </span>
                                 @endforeach
                             </div>
