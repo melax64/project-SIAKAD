@@ -11,34 +11,34 @@
             <p class="text-blue-200 mt-2">Masukkan nilai mahasiswa dengan format Excel</p>
         </div>
 
-        <!-- Filter Mata Kuliah -->
+        <!-- Filter Kelas -->
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Mata Kuliah</label>
-                    <select id="matkulSelect"
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pilih Kelas</label>
+                    <select id="kelasSelect"
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Pilih Mata Kuliah --</option>
-                        @forelse($dosen->mataKuliah ?? [] as $mk)
-                            <option value="{{ $mk->id }}">
-                                {{ $mk->mataKuliah->nama_matakuliah ?? '-' }} ({{ $mk->tipe_kelas }})
+                        <option value="">-- Pilih Kelas --</option>
+                        @forelse($allKelas ?? [] as $kelas)
+                            <option value="{{ $kelas->id }}">
+                                {{ $kelas->nama_kelas }} - {{ $kelas->prodi }} {{ $kelas->angkatan }}
                             </option>
                         @empty
-                            <option disabled>Tidak ada mata kuliah</option>
+                            <option disabled>Tidak ada kelas</option>
                         @endforelse
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tipe Kelas</label>
-                    <input type="text" id="tipeKelas" readonly
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Prodi</label>
+                    <input type="text" id="prodiKelas" readonly
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-gray-400 bg-gray-100"
                         placeholder="Akan otomatis terisi">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">SKS</label>
-                    <input type="text" id="sks" readonly
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Angkatan</label>
+                    <input type="text" id="angkatanKelas" readonly
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-gray-400 bg-gray-100"
                         placeholder="Akan otomatis terisi">
                 </div>
@@ -69,7 +69,7 @@
                     <tbody id="mahasiswaTable">
                         <tr>
                             <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                Pilih mata kuliah terlebih dahulu
+                                Pilih kelas terlebih dahulu
                             </td>
                         </tr>
                     </tbody>
@@ -92,14 +92,14 @@
     </div>
 
     <script>
-        // Data mata kuliah dari blade
-        const mataKuliahData = {!! json_encode(
-            ($dosen->mataKuliah ?? collect())->map(function ($mk) {
+        // Data kelas dari blade
+        const kelasData = {!! json_encode(
+            ($allKelas ?? collect())->map(function ($kelas) {
                 return [
-                    'id' => $mk->id,
-                    'nama' => $mk->mataKuliah->nama_matakuliah,
-                    'tipe_kelas' => $mk->tipe_kelas,
-                    'sks' => $mk->sks,
+                    'id' => $kelas->id,
+                    'nama_kelas' => $kelas->nama_kelas,
+                    'prodi' => $kelas->prodi,
+                    'angkatan' => $kelas->angkatan,
                 ];
             }),
         ) !!};
@@ -115,31 +115,31 @@
             return 'E'; // 0-39:   E (Sangat Kurang)
         }
 
-        // Event listener untuk dropdown mata kuliah
-        document.getElementById('matkulSelect').addEventListener('change', function() {
+        // Event listener untuk dropdown kelas
+        document.getElementById('kelasSelect').addEventListener('change', function() {
             const selectedId = this.value;
             const table = document.getElementById('mahasiswaTable');
 
             if (!selectedId) {
                 table.innerHTML =
-                    '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Pilih mata kuliah terlebih dahulu</td></tr>';
-                document.getElementById('tipeKelas').value = '';
-                document.getElementById('sks').value = '';
+                    '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Pilih kelas terlebih dahulu</td></tr>';
+                document.getElementById('prodiKelas').value = '';
+                document.getElementById('angkatanKelas').value = '';
                 return;
             }
 
-            // Set tipe kelas dan SKS
-            const selected = mataKuliahData.find(mk => mk.id == selectedId);
-            document.getElementById('tipeKelas').value = selected.tipe_kelas;
-            document.getElementById('sks').value = selected.sks;
+            // Set prodi dan angkatan
+            const selected = kelasData.find(k => k.id == selectedId);
+            document.getElementById('prodiKelas').value = selected.prodi;
+            document.getElementById('angkatanKelas').value = selected.angkatan;
 
-            // Load mahasiswa untuk mata kuliah ini via AJAX
-            loadMahasiswaByMataKuliah(selectedId);
+            // Load mahasiswa untuk kelas ini via AJAX
+            loadMahasiswaByKelas(selectedId);
         });
 
-        // Load mahasiswa berdasarkan mata kuliah
-        function loadMahasiswaByMataKuliah(dosenMataKuliahId) {
-            fetch(`/dosen/api/mahasiswa-by-matakuliah/${dosenMataKuliahId}`)
+        // Load mahasiswa berdasarkan kelas
+        function loadMahasiswaByKelas(kelasId) {
+            fetch(`/dosen/api/mahasiswa-by-kelas/${kelasId}`)
                 .then(response => response.json())
                 .then(data => {
                     renderMahasiswaTable(data.mahasiswa || []);
@@ -157,7 +157,7 @@
 
             if (mahasiswas.length === 0) {
                 table.innerHTML =
-                    '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Tidak ada mahasiswa untuk mata kuliah ini</td></tr>';
+                    '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Tidak ada mahasiswa untuk kelas ini</td></tr>';
                 return;
             }
 
@@ -232,10 +232,10 @@
 
         // Submit nilai dengan validasi lengkap
         function submitNilai() {
-            const dosenMataKuliahId = document.getElementById('matkulSelect').value;
+            const kelasId = document.getElementById('kelasSelect').value;
 
-            if (!dosenMataKuliahId) {
-                alert('⚠️ Silahkan pilih mata kuliah terlebih dahulu');
+            if (!kelasId) {
+                alert('⚠️ Silahkan pilih kelas terlebih dahulu');
                 return;
             }
 
@@ -247,7 +247,7 @@
                 if (nilaiAngka !== '') {
                     nilai.push({
                         mahasiswa_id: input.getAttribute('data-mahasiswa-id'),
-                        mata_kuliah: dosenMataKuliahId,
+                        kelas_id: kelasId,
                         nilai_angka: parseInt(nilaiAngka),
                         nilai_huruf: nilaiKeHuruf(nilaiAngka)
                     });
@@ -284,9 +284,9 @@
                     if (data.success) {
                         alert('✅ Nilai berhasil disimpan!');
                         // Reload data untuk menampilkan nilai terbaru
-                        const selectedId = document.getElementById('matkulSelect').value;
+                        const selectedId = document.getElementById('kelasSelect').value;
                         if (selectedId) {
-                            loadMahasiswaByMataKuliah(selectedId);
+                            loadMahasiswaByKelas(selectedId);
                         }
                     } else {
                         alert('❌ Error: ' + (data.message || 'Gagal menyimpan nilai'));
@@ -302,11 +302,11 @@
 
         // Reset form
         function resetForm() {
-            document.getElementById('matkulSelect').value = '';
-            document.getElementById('tipeKelas').value = '';
-            document.getElementById('sks').value = '';
+            document.getElementById('kelasSelect').value = '';
+            document.getElementById('prodiKelas').value = '';
+            document.getElementById('angkatanKelas').value = '';
             document.getElementById('mahasiswaTable').innerHTML =
-                '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Pilih mata kuliah terlebih dahulu</td></tr>';
+                '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Pilih kelas terlebih dahulu</td></tr>';
         }
 
         // Keyboard shortcut: Ctrl+Enter untuk submit

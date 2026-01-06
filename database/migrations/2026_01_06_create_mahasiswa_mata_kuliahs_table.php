@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('semester')->nullable(); // Contoh: '2024/2025 Genap'
             $table->timestamps();
 
-            // Composite unique - satu mahasiswa tidak bisa ambil satu mata kuliah 2x di semester sama
-            $table->unique(['mahasiswa_id', 'mata_kuliah_id', 'semester']);
+            // Composite unique dengan nama lebih pendek
+            $table->unique(['mahasiswa_id', 'mata_kuliah_id', 'semester'], 'mhs_mk_semester_unique');
         });
     }
 

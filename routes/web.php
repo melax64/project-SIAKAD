@@ -150,7 +150,8 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
     // API untuk mendapatkan mata kuliah dosen
     Route::get('/api/mata-kuliah', [DosenController::class, 'getMataKuliah'])->name('dosen.api.mata-kuliah');
 
-    // API untuk Input Nilai (menerima nama mata kuliah)
+    // API untuk Input Nilai
+    Route::get('/api/mahasiswa-by-kelas/{kelas}', [DosenController::class, 'getMahasiswaByKelas'])->name('dosen.api.mahasiswa-by-kelas');
     Route::get('/api/mahasiswa-by-matakuliah/{mataKuliah}', [DosenController::class, 'getMahasiswaByMataKuliah'])->name('dosen.api.mahasiswa-by-matakuliah');
     Route::post('/api/submit-nilai', [DosenController::class, 'submitNilai'])->name('dosen.api.submit-nilai');
 });

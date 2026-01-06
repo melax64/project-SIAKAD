@@ -12,7 +12,7 @@ class MahasiswaSeeder extends Seeder
 {
     public function run()
     {
-        // Generate 300 mahasiswa
+        // Generate 100 mahasiswa
         $mahasiswas = [];
         
         // Daftar nama untuk randomisasi
@@ -26,44 +26,57 @@ class MahasiswaSeeder extends Seeder
                          'Permana', 'Wulandari', 'Setiawan', 'Lestari', 'Hidayat', 'Anggraeni', 'Firmansyah', 'Maharani', 'Ramadhan', 'Nurhaliza'];
         
         $prodiList = [
-            'Teknik Informatika' => 'TI',
-            'Teknologi Rekayasa Multimedia' => 'TRMM',
-            'Teknologi Rekayasa Komputer Jaringan' => 'TRKJ',
+            'Teknik Informatika' => 11, // Kode prodi: 11
+            'Teknologi Rekayasa Multimedia' => 12, // Kode prodi: 12
+            'Teknologi Rekayasa Komputer Jaringan' => 13, // Kode prodi: 13
         ];
         
         $angkatanList = [2022, 2023, 2024, 2025];
         $kelasList = ['A', 'B', 'C'];
         
         $counter = 1;
+        $nimCounter = 1;
+        
         foreach ($angkatanList as $angkatan) {
             foreach ($prodiList as $prodiName => $prodiCode) {
-                // Tentukan jumlah mahasiswa per prodi per angkatan (sekitar 25)
-                $jumlahPerProdiAngkatan = 25;
+                // Tentukan jumlah mahasiswa per prodi per angkatan (sekitar 8-9)
+                $jumlahPerProdiAngkatan = 8;
                 
                 for ($i = 1; $i <= $jumlahPerProdiAngkatan; $i++) {
-                    if ($counter > 300) break 3; // Stop jika sudah 300
+                    if ($counter > 100) break 3; // Stop jika sudah 100
                     
-                    $nim = sprintf('%s%d%03d', $prodiCode, $angkatan, $i);
-                    $nama = $namaDepan[array_rand($namaDepan)] . ' ' . $namaBelakang[array_rand($namaBelakang)];
+                    // NIM format: angkatan (2 digit) + kode prodi (2 digit) + nomor urut (4 digit)
+                    // Contoh: 22110001 = angkatan 2022, prodi 11, nomor 0001
+                    $nim = sprintf('%02d%02d%04d', $angkatan % 100, $prodiCode, $nimCounter);
+                    
+                    $namaDepanPilih = $namaDepan[array_rand($namaDepan)];
+                    $namaBelakangPilih = $namaBelakang[array_rand($namaBelakang)];
+                    $nama = $namaDepanPilih . ' ' . $namaBelakangPilih;
                     $kelas = $kelasList[($i - 1) % count($kelasList)]; // Distribusi merata A, B, C
                     
                     $mahasiswas[] = [
                         'nim' => $nim,
                         'nama' => $nama,
+                        'nama_depan' => $namaDepanPilih,
+                        'nama_belakang' => $namaBelakangPilih,
                         'prodi' => $prodiName,
                         'angkatan' => $angkatan,
                         'kelas_name' => $kelas
                     ];
                     
                     $counter++;
+                    $nimCounter++;
                 }
             }
         }
 
         foreach ($mahasiswas as $data) {
-            $email = strtolower(str_replace(' ', '.', $data['nama'])) . $data['nim'] . '@student.ac.id';
+            // Email format: namadepan.namabelakang@student.ac.id
+            $email = strtolower($data['nama_depan']) . '.' . strtolower($data['nama_belakang']) . '@student.ac.id';
             $kelas_name = $data['kelas_name'];
             unset($data['kelas_name']);
+            unset($data['nama_depan']);
+            unset($data['nama_belakang']);
 
             // Cek apakah user sudah ada
             $user = User::firstOrCreate(

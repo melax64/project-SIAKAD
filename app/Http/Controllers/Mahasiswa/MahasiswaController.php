@@ -104,7 +104,7 @@ class MahasiswaController extends Controller
         $mataKuliahs = MataKuliah::orderBy('nama_matakuliah')->get();
 
         // Ambil mata kuliah yang sudah dipilih mahasiswa semester ini
-        $currentSemester = '2024/2025 Genap'; // Bisa disesuaikan dengan semester saat ini
+        $currentSemester = '2025/2026 Genap'; // Disesuaikan dengan semester di seeder
         $selectedKRS = MahasiswaMataKuliah::where('mahasiswa_id', $mahasiswa->id)
             ->where('semester', $currentSemester)
             ->where('status', 'aktif')
@@ -157,7 +157,7 @@ class MahasiswaController extends Controller
 
         try {
             DB::transaction(function () use ($mahasiswa, $courseIds) {
-                $currentSemester = '2024/2025 Genap';
+                $currentSemester = '2025/2026 Genap';
 
                 // Hapus KRS yang lama
                 MahasiswaMataKuliah::where('mahasiswa_id', $mahasiswa->id)

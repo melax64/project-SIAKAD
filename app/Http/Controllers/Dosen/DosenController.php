@@ -216,12 +216,87 @@ class DosenController extends Controller
     public function showInputNilai()
     {
         $user = Auth::user();
-        $dosen = Dosen::where('user_id', $user->id)->with('mataKuliah.mataKuliah')->first();
+        $dosen = Dosen::where('user_id', $user->id)->first();
+
+        // Jika bukan dosen, redirect
+        if (!$dosen) {
+            abort(403);
+        }
+
+        // Ambil semua mata kuliah yang diampu dosen ini (sebagai nama)
+        $mataKuliahNames = \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)
+            ->pluck('mata_kuliah')
+            ->toArray();
+
+        // Konversi nama mata kuliah ke ID
+        $mataKuliahIds = \App\Models\MataKuliah::whereIn('nama_matakuliah', $mataKuliahNames)
+            ->pluck('id')
+            ->toArray();
+
+        // Ambil kelas dari mahasiswa yang terdaftar di mata kuliah dosen
+        $kelasIds = \App\Models\MahasiswaMataKuliah::whereIn('mata_kuliah_id', $mataKuliahIds)
+            ->join('mahasiswas', 'mahasiswa_mata_kuliahs.mahasiswa_id', '=', 'mahasiswas.id')
+            ->whereNotNull('mahasiswas.kelas_id')
+            ->distinct()
+            ->pluck('mahasiswas.kelas_id')
+            ->toArray();
+
+        // Load hanya kelas yang relevan dengan mata kuliah dosen
+        $allKelas = \App\Models\Kelas::whereIn('id', $kelasIds)
+            ->orderBy('prodi')
+            ->orderBy('angkatan')
+            ->orderBy('nama_kelas')
+            ->get();
 
         return view('dosen.nilai-input', [
             'dosen' => $dosen,
+            'allKelas' => $allKelas,
             'activePage' => 'input-nilai',
         ]);
+    }
+
+    // Get mahasiswa berdasarkan kelas
+    public function getMahasiswaByKelas($kelasId, Request $request)
+    {
+        try {
+            $kelas = \App\Models\Kelas::findOrFail($kelasId);
+
+            // Dapatkan mahasiswa yang ada di kelas ini
+            $mahasiswas = Mahasiswa::with(['user', 'kelas'])
+                ->where('kelas_id', $kelasId)
+                ->orderBy('nim')
+                ->get()
+                ->map(function ($mahasiswa) {
+                    // Ambil nilai yang sudah ada (jika ada)
+                    $nilai = Nilai::where('mahasiswa_id', $mahasiswa->id)->first();
+
+                    return [
+                        'id' => $mahasiswa->id,
+                        'nim' => $mahasiswa->nim,
+                        'user' => [
+                            'name' => $mahasiswa->user->name ?? '-',
+                        ],
+                        'kelas' => $mahasiswa->kelas->nama_kelas ?? '-',
+                        'nilai_angka' => $nilai ? $nilai->nilai_angka : null,
+                        'nilai_huruf' => $nilai ? $nilai->nilai_huruf : null,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'kelas' => [
+                    'nama_kelas' => $kelas->nama_kelas,
+                    'prodi' => $kelas->prodi,
+                    'angkatan' => $kelas->angkatan,
+                ],
+                'mahasiswa' => $mahasiswas,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     // Get mahasiswa berdasarkan mata kuliah
