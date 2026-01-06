@@ -230,36 +230,63 @@ class DosenController extends Controller
         $user = Auth::user();
         $dosen = Dosen::where('user_id', $user->id)->first();
 
-        // Validasi bahwa dosen mengajar mata kuliah ini
-        $dosenMataKuliah = \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)
-            ->where('mata_kuliah', $mataKuliah)
-            ->first();
-
-        if (!$dosenMataKuliah) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda tidak mengajar mata kuliah ini'
-            ], 403);
+        // Cari mata kuliah berdasarkan ID atau nama
+        $mataKuliahObj = \App\Models\MataKuliah::find($mataKuliah);
+        
+        if (!$mataKuliahObj) {
+            // Fallback ke cari berdasarkan nama (dari dosen_mata_kuliah)
+            $mataKuliahObj = \App\Models\MataKuliah::where('nama_matakuliah', $mataKuliah)->first();
         }
 
-        // Get mahasiswa dengan nilai yang sudah ada untuk mata kuliah ini
-        $nilaiList = Nilai::where('dosen_id', $dosen->id)
-            ->where('mata_kuliah', $mataKuliah)
-            ->with(['mahasiswa.user'])
+        if (!$mataKuliahObj) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mata kuliah tidak ditemukan'
+            ], 404);
+        }
+
+        // Ambil mahasiswa yang mengambil mata kuliah ini (dari KRS)
+        $currentSemester = '2024/2025 Genap';
+        $mahasiswaListFromKRS = \App\Models\MahasiswaMataKuliah::where('mata_kuliah_id', $mataKuliahObj->id)
+            ->where('semester', $currentSemester)
+            ->where('status', 'aktif')
+            ->with(['mahasiswa.user', 'mahasiswa.kelas'])
             ->get();
 
-        // Format data untuk response
-        $data = $nilaiList->map(function ($nilai) {
+        // Format data dari KRS
+        $data = $mahasiswaListFromKRS->map(function ($item) {
             return [
-                'id' => $nilai->id,
-                'mahasiswa_id' => $nilai->mahasiswa_id,
-                'nama' => $nilai->mahasiswa->user->name,
-                'nim' => $nilai->mahasiswa->nim,
-                'kelas' => $nilai->mahasiswa->kelas ? $nilai->mahasiswa->kelas->nama_kelas : '-',
-                'nilai_angka' => $nilai->nilai_akhir ?? 0,
-                'nilai_huruf' => $nilai->nilai_huruf ?? '-',
+                'id' => $item->mahasiswa_id,
+                'mahasiswa_id' => $item->mahasiswa_id,
+                'nama' => $item->mahasiswa->user->name,
+                'nim' => $item->mahasiswa->nim,
+                'kelas' => $item->mahasiswa->kelas ? $item->mahasiswa->kelas->nama_kelas : '-',
+                'user' => [
+                    'name' => $item->mahasiswa->user->name
+                ]
             ];
         });
+
+        // Jika tidak ada dari KRS, ambil dari nilai yang sudah ada (backward compatibility)
+        if ($data->isEmpty()) {
+            $nilaiList = Nilai::where('dosen_id', $dosen->id)
+                ->where('mata_kuliah', $mataKuliahObj->nama_matakuliah)
+                ->with(['mahasiswa.user', 'mahasiswa.kelas'])
+                ->get();
+
+            $data = $nilaiList->map(function ($nilai) {
+                return [
+                    'id' => $nilai->mahasiswa_id,
+                    'mahasiswa_id' => $nilai->mahasiswa_id,
+                    'nama' => $nilai->mahasiswa->user->name,
+                    'nim' => $nilai->mahasiswa->nim,
+                    'kelas' => $nilai->mahasiswa->kelas ? $nilai->mahasiswa->kelas->nama_kelas : '-',
+                    'user' => [
+                        'name' => $nilai->mahasiswa->user->name
+                    ]
+                ];
+            });
+        }
 
         return response()->json([
             'success' => true,
@@ -284,14 +311,16 @@ class DosenController extends Controller
 
         try {
             foreach ($nilai as $item) {
+                // Hitung nilai akhir dari nilai_angka
+                // Asumsi nilai_angka adalah nilai akhir (bisa disesuaikan)
                 $nilaiModel = Nilai::updateOrCreate(
                     [
                         'mahasiswa_id' => $item['mahasiswa_id'],
                         'dosen_id' => $dosen->id,
+                        'mata_kuliah' => $item['mata_kuliah'] ?? '', // Ambil dari request atau dari dosenMataKuliah
                     ],
                     [
-                        'nilai_angka' => $item['nilai_angka'],
-                        'nilai_huruf' => $item['nilai_huruf'],
+                        'uas' => $item['nilai_angka'], // Simpan nilai ke UAS (bisa disesuaikan)
                     ]
                 );
             }

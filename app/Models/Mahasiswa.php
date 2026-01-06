@@ -35,4 +35,10 @@ class Mahasiswa extends Model
     {
         return $this->hasMany(Nilai::class);
     }
+
+    // Relasi Many-to-Many ke Mata Kuliah (melalui mahasiswa_mata_kuliahs)
+    public function mataKuliahs()
+    {
+        return $this->hasMany(MahasiswaMataKuliah::class);
+    }
 }

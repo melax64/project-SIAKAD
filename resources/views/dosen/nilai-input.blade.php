@@ -20,7 +20,7 @@
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">-- Pilih Mata Kuliah --</option>
                         @forelse($dosen->mataKuliah ?? [] as $mk)
-                            <option value="{{ $mk->id }}">
+                            <option value="{{ $mk->mata_kuliah }}">
                                 {{ $mk->mataKuliah->nama_matakuliah ?? '-' }} ({{ $mk->tipe_kelas }})
                             </option>
                         @empty
@@ -96,7 +96,7 @@
         const mataKuliahData = {!! json_encode(
             ($dosen->mataKuliah ?? collect())->map(function ($mk) {
                 return [
-                    'id' => $mk->id,
+                    'id' => $mk->mata_kuliah,
                     'nama' => $mk->mataKuliah->nama_matakuliah,
                     'tipe_kelas' => $mk->tipe_kelas,
                     'sks' => $mk->sks,
@@ -242,7 +242,7 @@
                 if (nilaiAngka !== '') {
                     nilai.push({
                         mahasiswa_id: input.getAttribute('data-mahasiswa-id'),
-                        dosen_matakuliah_id: dosenMataKuliahId,
+                        mata_kuliah: dosenMataKuliahId,
                         nilai_angka: parseInt(nilaiAngka),
                         nilai_huruf: nilaiKeHuruf(nilaiAngka)
                     });

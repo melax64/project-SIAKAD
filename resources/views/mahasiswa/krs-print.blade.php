@@ -239,32 +239,29 @@
         <div class="mata-kuliah-section">
             <h2>Daftar Mata Kuliah</h2>
 
-            @if ($nilaiList->isEmpty())
+            @if ($krsItems->isEmpty())
                 <p style="text-align: center; color: #999; padding: 20px;">Belum ada mata kuliah yang diambil</p>
             @else
                 <table>
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="35%">Mata Kuliah</th>
-                            <th width="15%">Tipe Kelas</th>
+                            <th width="50%">Mata Kuliah</th>
+                            <th width="15%">Kode</th>
                             <th width="10%">SKS</th>
-                            <th width="35%">Dosen Pengampu</th>
+                            <th width="20%">Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($nilaiList as $index => $nilai)
+                        @foreach ($krsItems as $index => $item)
                             <tr>
                                 <td style="text-align: center;">{{ $index + 1 }}</td>
-                                <td>{{ $nilai->mata_kuliah ?? '-' }}</td>
-                                <td>
-                                    <span
-                                        class="tipe-badge {{ $nilai->tipe_kelas === 'teori' ? 'tipe-teori' : 'tipe-praktikum' }}">
-                                        {{ $nilai->tipe_kelas === 'teori' ? 'TEORI' : 'PRAKTIKUM' }}
-                                    </span>
+                                <td>{{ $item->mataKuliah->nama_matakuliah ?? '-' }}</td>
+                                <td>{{ $item->mataKuliah->kode_matakuliah ?? '-' }}</td>
+                                <td style="text-align: center;">{{ $item->mataKuliah->sks ?? '-' }}</td>
+                                <td style="text-align: center;">
+                                    <span class="status-badge">{{ ucfirst($item->status) }}</span>
                                 </td>
-                                <td style="text-align: center;">{{ $nilai->sks ?? '-' }}</td>
-                                <td>{{ $nilai->dosen->user->name ?? '-' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

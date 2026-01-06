@@ -173,6 +173,7 @@ Route::prefix('mahasiswa')->middleware(['auth', 'role:mahasiswa'])->group(functi
     })->name('mahasiswa.dashboard');
 
     Route::get('/krs', [MahasiswaController::class, 'showKRS'])->name('mahasiswa.krs');
+    Route::post('/krs/submit', [MahasiswaController::class, 'submitKRS'])->name('mahasiswa.krs.submit');
     Route::get('/krs/print', [MahasiswaController::class, 'printKRS'])->name('mahasiswa.krs.print');
     Route::get('/nilai', [MahasiswaController::class, 'showNilai'])->name('mahasiswa.nilai');
     Route::get('/profil', [MahasiswaController::class, 'showProfil'])->name('mahasiswa.profil');

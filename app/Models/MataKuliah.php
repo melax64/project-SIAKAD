@@ -19,4 +19,10 @@ class MataKuliah extends Model
     {
         return $this->hasMany(DosenMataKuliah::class, 'mata_kuliah', 'nama_matakuliah');
     }
+
+    // Relasi ke Mahasiswa (many-to-many)
+    public function mahasiswas()
+    {
+        return $this->hasMany(MahasiswaMataKuliah::class);
+    }
 }
