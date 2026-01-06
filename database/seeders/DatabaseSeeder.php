@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             MataKuliahSeeder::class,
             AdminSeeder::class,
             DosenSeeder::class,
+            MahasiswaSeeder::class,
         ]);
     }
     // public function run(): void

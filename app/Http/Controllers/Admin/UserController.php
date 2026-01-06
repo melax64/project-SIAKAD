@@ -127,4 +127,38 @@ class UserController extends Controller
 
         return view('admin.dosen.index', compact('dosens'), ['activePage' => 'data-dosen']);
     }
+
+    // --- DELETE MAHASISWA ---
+    public function destroyMahasiswa($id)
+    {
+        $mahasiswa = Mahasiswa::findOrFail($id);
+
+        DB::transaction(function () use ($mahasiswa) {
+            // Hapus user terkait
+            User::where('id', $mahasiswa->user_id)->delete();
+            // Hapus data mahasiswa (cascade akan otomatis terkena)
+            $mahasiswa->delete();
+        });
+
+        return redirect()->route('admin.mahasiswa')
+            ->with('success', 'Mahasiswa berhasil dihapus!');
+    }
+
+    // --- DELETE DOSEN ---
+    public function destroyDosen($id)
+    {
+        $dosen = Dosen::findOrFail($id);
+
+        DB::transaction(function () use ($dosen) {
+            // Hapus mata kuliah yang diampu
+            \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)->delete();
+            // Hapus user terkait
+            User::where('id', $dosen->user_id)->delete();
+            // Hapus data dosen (cascade akan otomatis terkena)
+            $dosen->delete();
+        });
+
+        return redirect()->route('admin.dosen')
+            ->with('success', 'Dosen berhasil dihapus!');
+    }
 }

@@ -67,8 +67,11 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     // Create & Store
     Route::get('/mahasiswa/create', [UserController::class, 'createMahasiswa'])->name('admin.mahasiswa.create');
     Route::post('/mahasiswa', [UserController::class, 'storeMahasiswa'])->name('admin.mahasiswa.store');
+    Route::delete('/mahasiswa/{id}', [UserController::class, 'destroyMahasiswa'])->name('admin.mahasiswa.destroy');
+    
     Route::get('/dosen/create', [UserController::class, 'createDosen'])->name('admin.dosen.create');
     Route::post('/dosen', [UserController::class, 'storeDosen'])->name('admin.dosen.store');
+    Route::delete('/dosen/{id}', [UserController::class, 'destroyDosen'])->name('admin.dosen.destroy');
 
     // Mata Kuliah CRUD
     Route::resource('matakuliah', MataKuliahController::class, [
