@@ -295,4 +295,106 @@ class DosenController extends Controller
             ], 500);
         }
     }
+
+    // ===== HALAMAN INPUT NILAI TABEL (BARU) =====
+    public function showNilaiTable()
+    {
+        $user = Auth::user();
+        $dosen = Dosen::where('user_id', $user->id)->first();
+
+        // Get mata kuliah yang diajar dosen
+        $mataKuliahList = \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)
+            ->select('mata_kuliah', 'tipe_kelas', 'sks')
+            ->distinct()
+            ->get();
+
+        return view('dosen.nilai-table', [
+            'mataKuliahList' => $mataKuliahList,
+            'activePage' => 'input-nilai-tabel',
+        ]);
+    }
+
+    // Store nilai dari tabel (AJAX/FORM)
+    public function storeNilaiTable(Request $request)
+    {
+        $user = Auth::user();
+        $dosen = Dosen::where('user_id', $user->id)->first();
+
+        $validated = $request->validate([
+            'mata_kuliah' => 'required|string',
+            'nilai_data' => 'required|array',
+            'nilai_data.*.mahasiswa_id' => 'required|exists:mahasiswas,id',
+            'nilai_data.*.nilai_angka' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $mata_kuliah = $validated['mata_kuliah'];
+
+        // Cek apakah dosen mengajar mata kuliah ini
+        $dosenMataKuliah = \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)
+            ->where('mata_kuliah', $mata_kuliah)
+            ->first();
+
+        if (!$dosenMataKuliah) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak mengajar mata kuliah ini'
+            ], 403);
+        }
+
+        // Simpan/update nilai untuk setiap mahasiswa
+        foreach ($validated['nilai_data'] as $item) {
+            $nilai = Nilai::where('dosen_id', $dosen->id)
+                ->where('mahasiswa_id', $item['mahasiswa_id'])
+                ->where('mata_kuliah', $mata_kuliah)
+                ->first();
+
+            if ($nilai) {
+                // Update
+                $nilai->update([
+                    'nilai_akhir' => $item['nilai_angka'],
+                    'nilai_huruf' => $this->convertToGrade($item['nilai_angka']),
+                ]);
+            } else {
+                // Create
+                Nilai::create([
+                    'dosen_id' => $dosen->id,
+                    'mahasiswa_id' => $item['mahasiswa_id'],
+                    'mata_kuliah' => $mata_kuliah,
+                    'nilai_akhir' => $item['nilai_angka'],
+                    'nilai_huruf' => $this->convertToGrade($item['nilai_angka']),
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Nilai berhasil disimpan!'
+        ]);
+    }
+
+    // Helper function: Convert nilai angka ke huruf
+    private function convertToGrade($nilai)
+    {
+        if ($nilai >= 85) {
+            return 'A';
+        } elseif ($nilai >= 80) {
+            return 'A-';
+        } elseif ($nilai >= 75) {
+            return 'B+';
+        } elseif ($nilai >= 70) {
+            return 'B';
+        } elseif ($nilai >= 65) {
+            return 'B-';
+        } elseif ($nilai >= 60) {
+            return 'C+';
+        } elseif ($nilai >= 55) {
+            return 'C';
+        } elseif ($nilai >= 50) {
+            return 'C-';
+        } elseif ($nilai >= 40) {
+            return 'D';
+        } else {
+            return 'E';
+        }
+    }
 }

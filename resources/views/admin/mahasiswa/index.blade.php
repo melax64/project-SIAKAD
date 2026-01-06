@@ -11,9 +11,8 @@
                 <p class="text-gray-600 dark:text-gray-400 mt-1">Total: {{ $mahasiswas->count() }} Mahasiswa</p>
             </div>
             <a href="{{ route('admin.mahasiswa.create') }}"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition flex items-center gap-2">
-                <i data-lucide="plus" class="w-5 h-5"></i>
-                Tambah Baru
+                class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition">
+                + Tambah Baru
             </a>
         </div>
 

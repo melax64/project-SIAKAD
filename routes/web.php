@@ -124,6 +124,8 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
 
     // Routes untuk Input Nilai (Excel)
     Route::get('/nilai', [DosenController::class, 'showInputNilai'])->name('dosen.nilai');
+    Route::get('/nilai-tabel', [DosenController::class, 'showNilaiTable'])->name('dosen.nilai.table');
+    Route::post('/nilai-tabel', [DosenController::class, 'storeNilaiTable'])->name('dosen.nilai.table.store');
     Route::get('/bimbingan', fn() => 'Halaman Bimbingan')->name('dosen.bimbingan');
     Route::get('/kelas', fn() => 'Halaman Daftar Kelas')->name('dosen.kelas');
     Route::get('/profil', [DosenController::class, 'showProfil'])->name('dosen.profil');
@@ -151,6 +153,7 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
 
     // API untuk Input Nilai
     Route::get('/api/mahasiswa-by-matakuliah/{dosenMataKuliahId}', [DosenController::class, 'getMahasiswaByMataKuliah'])->name('dosen.api.mahasiswa-by-matakuliah');
+    Route::get('/api/mahasiswa-by-matakuliah/{mataKuliah}', [DosenController::class, 'getMahasiswaByMataKuliah'])->name('dosen.api.mahasiswa-by-matakuliah');
     Route::post('/api/submit-nilai', [DosenController::class, 'submitNilai'])->name('dosen.api.submit-nilai');
 });
 
