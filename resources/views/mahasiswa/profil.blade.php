@@ -79,16 +79,6 @@
                             </div>
                         </div>
 
-                        <!-- Angkatan -->
-                        <div>
-                            <label
-                                class="block text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">Angkatan</label>
-                            <div
-                                class="px-4 py-3 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-600 rounded-lg">
-                                <p class="text-gray-900 dark:text-white font-semibold">{{ $mahasiswa->angkatan ?? '-' }}</p>
-                            </div>
-                        </div>
-
                         <!-- Tahun Akademik -->
                         <div>
                             <label

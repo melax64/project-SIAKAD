@@ -86,9 +86,6 @@
                                     Dosen</th>
                                 <th
                                     class="px-6 py-3 text-center text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">
-                                    Kehadiran</th>
-                                <th
-                                    class="px-6 py-3 text-center text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">
                                     Tugas</th>
                                 <th
                                     class="px-6 py-3 text-center text-xs font-medium text-gray-700 dark:text-gray-300 uppercase">
@@ -108,10 +105,9 @@
                             @foreach ($nilaiList as $index => $nilai)
                                 @php
                                     $nilaiAkhir =
-                                        ($nilai->kehadiran ?? 0) * 0.1 +
                                         ($nilai->tugas ?? 0) * 0.2 +
                                         ($nilai->uts ?? 0) * 0.3 +
-                                        ($nilai->uas ?? 0) * 0.4;
+                                        ($nilai->uas ?? 0) * 0.5;
 
                                     if ($nilaiAkhir >= 85) {
                                         $grade = 'A';
@@ -162,9 +158,6 @@
                                         {{ $nilai->dosen->user->name ?? '-' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-center text-gray-900 dark:text-white">
-                                        {{ $nilai->kehadiran ?? '-' }}%
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-center text-gray-900 dark:text-white">
                                         {{ $nilai->tugas ?? '-' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-center text-gray-900 dark:text-white">
@@ -196,10 +189,6 @@
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Komponen Penilaian</h3>
                     <div class="space-y-3">
                         <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-slate-700">
-                            <span class="text-gray-600 dark:text-gray-400">Kehadiran</span>
-                            <span class="font-semibold text-gray-900 dark:text-white">10%</span>
-                        </div>
-                        <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-slate-700">
                             <span class="text-gray-600 dark:text-gray-400">Tugas</span>
                             <span class="font-semibold text-gray-900 dark:text-white">20%</span>
                         </div>
@@ -209,7 +198,7 @@
                         </div>
                         <div class="flex justify-between items-center py-2">
                             <span class="text-gray-600 dark:text-gray-400">UAS (Final)</span>
-                            <span class="font-semibold text-gray-900 dark:text-white">40%</span>
+                            <span class="font-semibold text-gray-900 dark:text-white">50%</span>
                         </div>
                     </div>
                 </div>

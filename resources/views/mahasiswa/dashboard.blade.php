@@ -38,20 +38,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Angkatan -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 font-medium">Angkatan</p>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">{{ $mahasiswa->angkatan ?? '-' }}
-                        </p>
-                    </div>
-                    <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
-                        <i data-lucide="calendar" class="w-6 h-6 text-purple-600"></i>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Quick Actions -->

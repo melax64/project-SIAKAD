@@ -19,56 +19,70 @@ class DosenSeeder extends Seeder
                 'email' => 'budi.santoso@siakad.com',
                 'nip' => '198501151020011001',
                 'jabatan' => 'Dosen Tetap',
-                'mataKuliah' => ['Pemrograman Web', 'Web Framework Advanced'],
+                'mataKuliah' => ['Pemrograman Dasar', 'Pemrograman Web Lanjut'],
             ],
             [
                 'name' => 'Prof. Siti Nurhaliza, Ph.D',
                 'email' => 'siti.nurhaliza@siakad.com',
                 'nip' => '111',
                 'jabatan' => 'Dosen Tetap',
-                'mataKuliah' => ['Database Design', 'Advanced Database'],
+                'mataKuliah' => ['Advanced Database', 'Struktur Data'],
             ],
             [
                 'name' => 'Ir. Ahmad Wijaya, M.T',
                 'email' => 'ahmad.wijaya@siakad.com',
                 'nip' => '198703151998021001',
                 'jabatan' => 'Dosen Tetap',
-                'mataKuliah' => ['Operating System', 'Linux Administration'],
+                'mataKuliah' => ['Algoritma dan Pemrograman', 'Software Engineering'],
             ],
             [
                 'name' => 'Dr. Rina Puspita, S.Kom, M.Tech',
                 'email' => 'rina.puspita@siakad.com',
                 'nip' => '198912251997032001',
                 'jabatan' => 'Dosen Tidak Tetap',
-                'mataKuliah' => ['Algoritma & Struktur Data', 'Advanced Algorithm'],
+                'mataKuliah' => ['Mobile Application Development', 'Bahasa Indonesia'],
             ],
             [
                 'name' => 'Drs. Hendra Gunawan, M.Sc',
                 'email' => 'hendra.gunawan@siakad.com',
                 'nip' => '196508301995121001',
                 'jabatan' => 'Dosen Tetap',
-                'mataKuliah' => ['Jaringan Komputer', 'Network Security'],
+                'mataKuliah' => ['Jaringan Komputer', 'Keamanan Jaringan'],
             ],
             [
                 'name' => 'Dr. Dwi Retno Kusuma, M.Pd',
                 'email' => 'dwi.retno@siakad.com',
                 'nip' => '197805201999032002',
                 'jabatan' => 'Dosen Tetap',
-                'mataKuliah' => ['User Interface Design', 'Pemrograman Web'],
+                'mataKuliah' => ['UI/UX Design', 'Desain Grafis'],
             ],
             [
                 'name' => 'Ir. Toni Hermawan, M.Tech',
                 'email' => 'toni.hermawan@siakad.com',
                 'nip' => '198401181996031001',
                 'jabatan' => 'Dosen Tetap',
-                'mataKuliah' => ['Software Engineering', 'Web Framework Advanced'],
+                'mataKuliah' => ['Administrasi Server', 'Cloud Computing'],
             ],
             [
                 'name' => 'Dr. Maya Wijayanti, S.Si, M.Tech',
                 'email' => 'maya.wijayanti@siakad.com',
                 'nip' => '198612141998021003',
                 'jabatan' => 'Dosen Tidak Tetap',
-                'mataKuliah' => ['Network Security', 'Database Design'],
+                'mataKuliah' => ['Animasi 2D', 'Video Editing'],
+            ],
+            [
+                'name' => 'Prof. Agus Prasetyo, Ph.D',
+                'email' => 'agus.prasetyo@siakad.com',
+                'nip' => '196712201992031001',
+                'jabatan' => 'Dosen Tetap',
+                'mataKuliah' => ['Bahasa Inggris', 'Pendidikan Kewarganegaraan'],
+            ],
+            [
+                'name' => 'Dr. Sri Wahyuni, M.Kom',
+                'email' => 'sri.wahyuni@siakad.com',
+                'nip' => '197506151999032001',
+                'jabatan' => 'Dosen Tetap',
+                'mataKuliah' => ['Matematika Dasar', 'Kewirausahaan'],
             ],
         ];
 
@@ -115,5 +129,7 @@ class DosenSeeder extends Seeder
                 }
             });
         }
+        
+        $this->command->info("✅ Total " . count($dosens) . " dosen berhasil dibuat!");
     }
 }

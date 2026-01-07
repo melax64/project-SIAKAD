@@ -74,7 +74,7 @@ class MataKuliahSeeder extends Seeder
             [
                 'kode_matakuliah' => 'TI105',
                 'nama_matakuliah' => 'Algoritma dan Pemrograman',
-                'sks' => 4,
+                'sks' => 3,
                 'deskripsi' => 'Algoritma kompleks dan problem solving',
             ],
             [
@@ -162,19 +162,19 @@ class MataKuliahSeeder extends Seeder
             [
                 'kode_matakuliah' => 'KJ105',
                 'nama_matakuliah' => 'Cloud Computing',
-                'sks' => 3,
+                'sks' => 2,
                 'deskripsi' => 'Teknologi cloud computing dan virtualisasi',
             ],
             [
                 'kode_matakuliah' => 'KJ106',
                 'nama_matakuliah' => 'Network Security & Penetration Testing',
-                'sks' => 3,
+                'sks' => 2,
                 'deskripsi' => 'Ethical hacking dan penetration testing',
             ],
             [
                 'kode_matakuliah' => 'KJ107',
                 'nama_matakuliah' => 'Wireless Network',
-                'sks' => 3,
+                'sks' => 2,
                 'deskripsi' => 'Jaringan wireless dan konfigurasi access point',
             ],
         ];
