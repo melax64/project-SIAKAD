@@ -332,11 +332,7 @@ class DosenController extends Controller
     }
 
     // Get mahasiswa berdasarkan mata kuliah
-<<<<<<< HEAD
-    public function getMahasiswaByMataKuliah($dosenMataKuliahId)
-=======
     public function getMahasiswaByMataKuliah($dosenMataKuliahId, Request $request)
->>>>>>> e35b644c01fe29389ce19eb27250dd66f038cad5
     {
         $user = Auth::user();
         $dosen = Dosen::where('user_id', $user->id)->first();
@@ -353,18 +349,6 @@ class DosenController extends Controller
             ], 404);
         }
 
-<<<<<<< HEAD
-        // Get mahasiswa untuk mata kuliah ini
-        // Hubungan banyak-ke-banyak via tabel tertentu
-        // Untuk sekarang kita ambil semua mahasiswa (adjust sesuai kebutuhan)
-        $mahasiswas = Mahasiswa::with('user')
-            ->get()
-            ->take(10); // Limit untuk demo
-
-        return response()->json([
-            'success' => true,
-            'mahasiswa' => $mahasiswas
-=======
         // Optional kelas and prodi filter via query parameters
         $kelas = $request->query('kelas');
         $prodiCode = $request->query('prodi');
@@ -433,7 +417,6 @@ class DosenController extends Controller
         return response()->json([
             'success' => true,
             'mahasiswa' => $mahasiswas,
->>>>>>> e35b644c01fe29389ce19eb27250dd66f038cad5
         ]);
     }
 
