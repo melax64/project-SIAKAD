@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kelas'); // A1, A2, B1, B2, etc.
+            $table->string('nama_kelas'); // A, B, C
             $table->string('prodi'); // Program Studi
-            $table->year('angkatan'); // Tahun angkatan
             $table->integer('kapasitas')->default(40);
             $table->timestamps();
 
-            // Unique constraint untuk nama kelas per prodi dan angkatan
-            $table->unique(['nama_kelas', 'prodi', 'angkatan']);
+            // Unique constraint untuk nama kelas per prodi
+            $table->unique(['nama_kelas', 'prodi']);
         });
     }
 

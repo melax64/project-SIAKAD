@@ -39,7 +39,7 @@ class NilaiController extends Controller
         }
 
         $nilais = $query->paginate(15);
-        $kelas = Kelas::orderBy('prodi')->orderBy('angkatan')->orderBy('nama_kelas')->get();
+        $kelas = Kelas::orderBy('prodi')->orderBy('nama_kelas')->get();
         $mataKuliahs = MataKuliah::all();
 
         return view('nilai.index', compact('nilais', 'kelas', 'mataKuliahs'));

@@ -244,7 +244,6 @@ class DosenController extends Controller
         // Load hanya kelas yang relevan dengan mata kuliah dosen
         $allKelas = \App\Models\Kelas::whereIn('id', $kelasIds)
             ->orderBy('prodi')
-            ->orderBy('angkatan')
             ->orderBy('nama_kelas')
             ->get();
 
