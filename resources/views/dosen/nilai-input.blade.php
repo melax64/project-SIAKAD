@@ -197,10 +197,7 @@
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    allMahasiswaData = data.mahasiswa || [];
-                    populateKelasDropdown(allMahasiswaData, data.kelasList || [], data.allKelasPatterns || []);
-                    // default: show all (or first kelas if desired)
-                    renderMahasiswaTable(allMahasiswaData);
+                    renderMahasiswaTable(data.mahasiswa || []);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -208,76 +205,6 @@
                         '<tr><td colspan="6" class="px-4 py-8 text-center text-red-500">Error loading data</td></tr>';
                 });
         }
-
-        // Populate kelas dropdown. Priority:
-        // 1) server-provided allKelasPatterns (global)
-        // 2) server-provided kelasList (from DB)
-        // 3) derived from mahasiswa array
-        function populateKelasDropdown(mahasiswas, kelasList, allKelasPatterns) {
-            const kelasSelect = document.getElementById('kelasSelect');
-            kelasSelect.innerHTML = '<option value="">-- Semua Kelas --</option>';
-
-            let items = [];
-            if (Array.isArray(allKelasPatterns) && allKelasPatterns.length > 0) {
-                items = allKelasPatterns.slice();
-            } else if (Array.isArray(kelasList) && kelasList.length > 0) {
-                items = kelasList.slice();
-            } else if (Array.isArray(mahasiswas) && mahasiswas.length > 0) {
-                const kelasSet = new Set();
-                mahasiswas.forEach(m => {
-                    if (m.kelas) kelasSet.add(m.kelas);
-                });
-                items = Array.from(kelasSet);
-            }
-
-            items.sort();
-            items.forEach(k => {
-                const opt = document.createElement('option');
-                opt.value = k;
-                opt.textContent = k;
-                kelasSelect.appendChild(opt);
-            });
-        }
-
-        // When kelas selected, try server-side filtered fetch if mata kuliah selected,
-        // otherwise fall back to client-side filtering
-        document.getElementById('kelasSelect').addEventListener('change', function() {
-            const selectedKelas = this.value;
-            const matkulId = document.getElementById('matkulSelect').value;
-
-            if (!matkulId) {
-                // no mata kuliah selected, just filter client-side
-                if (!selectedKelas) return renderMahasiswaTable(allMahasiswaData);
-                const filtered = allMahasiswaData.filter(m => m.kelas === selectedKelas);
-                return renderMahasiswaTable(filtered);
-            }
-
-            // If kelas empty, load all cached data if available
-            if (!selectedKelas) {
-                if (allMahasiswaData.length > 0) return renderMahasiswaTable(allMahasiswaData);
-                // otherwise fetch full list from server
-                return loadMahasiswaByMataKuliah(matkulId);
-            }
-
-            // Fetch filtered mahasiswa from server for the selected kelas
-            // include prodi when requesting filtered kelas results
-            const prodiParam = document.getElementById('prodiSelect')?.value || '';
-            let url = `/dosen/api/mahasiswa-by-matakuliah/${matkulId}?kelas=${encodeURIComponent(selectedKelas)}`;
-            if (prodiParam) url += `&prodi=${encodeURIComponent(prodiParam)}`;
-            fetch(url)
-                .then(r => r.json())
-                .then(data => {
-                    allMahasiswaData = data.mahasiswa || [];
-                    populateKelasDropdown(allMahasiswaData, data.kelasList || [], data.allKelasPatterns || []);
-                    renderMahasiswaTable(allMahasiswaData);
-                })
-                .catch(err => {
-                    console.error('Error fetching filtered mahasiswa:', err);
-                    // fallback to client-side filter
-                    const filtered = allMahasiswaData.filter(m => m.kelas === selectedKelas);
-                    renderMahasiswaTable(filtered);
-                });
-        });
 
         // Render tabel mahasiswa
         function renderMahasiswaTable(mahasiswas) {

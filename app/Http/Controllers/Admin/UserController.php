@@ -28,7 +28,6 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'nim' => 'required|string|unique:mahasiswas,nim',
             'prodi' => 'required|string',
-            'angkatan' => 'required|numeric|min:2000|max:' . date('Y'),
             'kelas_id' => 'required|exists:kelas,id',
         ]);
 
@@ -51,7 +50,6 @@ class UserController extends Controller
                 'user_id' => $user->id, // Relasi ke tabel user
                 'nim' => $validated['nim'],
                 'prodi' => $validated['prodi'],
-                'angkatan' => $validated['angkatan'],
                 'kelas_id' => $validated['kelas_id'],
             ]);
         });
@@ -127,25 +125,19 @@ class UserController extends Controller
             $query->where('prodi', $request->prodi);
         }
 
-        // Filter by angkatan
-        if ($request->filled('angkatan')) {
-            $query->where('angkatan', $request->angkatan);
-        }
-
         // Filter by kelas
         if ($request->filled('kelas')) {
             $query->where('kelas_id', $request->kelas);
         }
 
-        $mahasiswas = $query->orderBy('prodi')->orderBy('angkatan')->get();
+        $mahasiswas = $query->orderBy('prodi')->get();
 
         // Get unique values for filter dropdowns
         $allProdi = \App\Models\Mahasiswa::select('prodi')->distinct()->pluck('prodi');
-        $allAngkatan = \App\Models\Mahasiswa::select('angkatan')->distinct()->orderByDesc('angkatan')->pluck('angkatan');
         $allKelas = \App\Models\Kelas::orderBy('nama_kelas')->get();
 
         // Kirim data ke view index
-        return view('admin.mahasiswa.index', compact('mahasiswas', 'allProdi', 'allAngkatan', 'allKelas'), ['activePage' => 'data-mahasiswa']);
+        return view('admin.mahasiswa.index', compact('mahasiswas', 'allProdi', 'allKelas'), ['activePage' => 'data-mahasiswa']);
     }
 
     public function indexDosen()

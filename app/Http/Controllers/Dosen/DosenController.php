@@ -389,7 +389,7 @@ class DosenController extends Controller
         }
 
         // Jika tidak ada filter, batasi hasil untuk performa (tune as needed)
-        $mahasiswas = $query->orderBy('prodi')->orderBy('angkatan')->get();
+        $mahasiswas = $query->orderBy('prodi')->get();
 
         // Transform data untuk menambahkan nama kelas dan nilai yang sudah ada
         $mahasiswas = $mahasiswas->map(function ($mhs) use ($dosen, $dosenMataKuliah) {
@@ -403,7 +403,7 @@ class DosenController extends Controller
                 'id' => $mhs->id,
                 'nim' => $mhs->nim,
                 'prodi' => $mhs->prodi,
-                'angkatan' => $mhs->angkatan,
+                'angkatan' => $mhs->kelas ? $mhs->kelas->angkatan : '-',
                 'kelas' => $mhs->kelas ? $mhs->kelas->nama_kelas : '-',
                 'nilai_angka' => $nilai ? $nilai->nilai_angka : null,
                 'nilai_huruf' => $nilai ? $nilai->nilai_huruf : null,
@@ -480,11 +480,6 @@ class DosenController extends Controller
         // Filter berdasarkan prodi
         if ($request->filled('prodi')) {
             $query->where('prodi', $request->prodi);
-        }
-
-        // Filter berdasarkan angkatan
-        if ($request->filled('angkatan')) {
-            $query->where('angkatan', $request->angkatan);
         }
 
         // Filter berdasarkan kelas

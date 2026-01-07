@@ -45,21 +45,6 @@
                 </div>
 
                 <div class="flex-1 min-w-[200px]">
-                    <label for="angkatan" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Angkatan
-                    </label>
-                    <select name="angkatan" id="angkatan"
-                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                        <option value="">Semua Angkatan</option>
-                        @foreach($allAngkatan as $angkatan)
-                            <option value="{{ $angkatan }}" {{ request('angkatan') == $angkatan ? 'selected' : '' }}>
-                                {{ $angkatan }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="flex-1 min-w-[200px]">
                     <label for="kelas" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Kelas
                     </label>
@@ -68,7 +53,7 @@
                         <option value="">Semua Kelas</option>
                         @foreach($allKelas as $kelas)
                             <option value="{{ $kelas->id }}" {{ request('kelas') == $kelas->id ? 'selected' : '' }}>
-                                {{ $kelas->nama_kelas }} - {{ $kelas->prodi }} {{ $kelas->angkatan }}
+                                {{ $kelas->nama_kelas }} - {{ $kelas->prodi }}
                             </option>
                         @endforeach
                     </select>
@@ -104,7 +89,6 @@
                             <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">NIM</th>
                             <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Nama Lengkap</th>
                             <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Prodi</th>
-                            <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Angkatan</th>
                             <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Kelas</th>
                             <th class="px-6 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Email</th>
                             <th class="px-6 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Aksi</th>
@@ -119,7 +103,6 @@
                                     {{ $mhs->nim }}</td>
                                 <td class="px-6 py-4 text-gray-900 dark:text-white">{{ $mhs->user->name ?? '-' }}</td>
                                 <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ $mhs->prodi }}</td>
-                                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ $mhs->angkatan }}</td>
                                 <td class="px-6 py-4">
                                     <span
                                         class="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">

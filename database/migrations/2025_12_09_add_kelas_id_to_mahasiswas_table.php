@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('mahasiswas', function (Blueprint $table) {
             // Tambah kolom kelas_id dengan foreign key
-            $table->foreignId('kelas_id')->nullable()->after('angkatan')->constrained('kelas')->onDelete('set null');
+            $table->foreignId('kelas_id')->nullable()->after('prodi')->constrained('kelas')->onDelete('set null');
         });
     }
 

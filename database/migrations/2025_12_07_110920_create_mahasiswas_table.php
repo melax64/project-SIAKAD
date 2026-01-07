@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nim')->unique();
             $table->string('prodi');
-            $table->year('angkatan')->default(2024);
             $table->timestamps();
         });
     }

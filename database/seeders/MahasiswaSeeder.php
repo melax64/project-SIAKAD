@@ -12,73 +12,69 @@ class MahasiswaSeeder extends Seeder
 {
     public function run()
     {
-        // Generate 100 mahasiswa
-        $mahasiswas = [];
-        
-        // Daftar nama untuk randomisasi
-        $namaDepan = ['Andi', 'Budi', 'Citra', 'Dedi', 'Eka', 'Faisal', 'Gita', 'Hendra', 'Intan', 'Joko', 
-                      'Kasino', 'Laila', 'Miko', 'Nina', 'Oscar', 'Padmi', 'Qori', 'Rini', 'Sandi', 'Tina',
-                      'Udin', 'Vina', 'Wahyu', 'Xenya', 'Yuni', 'Zaki', 'Ahmad', 'Bella', 'Candra', 'Dian',
-                      'Evan', 'Fitri', 'Gilang', 'Hani', 'Irfan', 'Julia', 'Kevin', 'Luna', 'Maya', 'Nanda'];
-        
-        $namaBelakang = ['Pratama', 'Santoso', 'Dewi', 'Harahap', 'Putri', 'Rahman', 'Sari', 'Wijaya', 'Kusuma', 'Supriyanto',
-                         'Nurdin', 'Handoko', 'Salsabila', 'Mandala', 'Hermawan', 'Susanti', 'Suganda', 'Hayati', 'Abdullah', 'Saputra',
-                         'Permana', 'Wulandari', 'Setiawan', 'Lestari', 'Hidayat', 'Anggraeni', 'Firmansyah', 'Maharani', 'Ramadhan', 'Nurhaliza'];
-        
-        $prodiList = [
-            'Teknik Informatika' => 11, // Kode prodi: 11
-            'Teknologi Rekayasa Multimedia' => 12, // Kode prodi: 12
-            'Teknologi Rekayasa Komputer Jaringan' => 13, // Kode prodi: 13
+        // Manual entry mahasiswa - 3 kelas per prodi
+        $mahasiswas = [
+            // Teknik Informatika - Kelas A
+            ['nim' => '110001', 'nama' => 'Andi Pratama', 'prodi' => 'Teknik Informatika', 'kelas' => 'A'],
+            ['nim' => '110002', 'nama' => 'Budi Santoso', 'prodi' => 'Teknik Informatika', 'kelas' => 'A'],
+            ['nim' => '110003', 'nama' => 'Citra Dewi', 'prodi' => 'Teknik Informatika', 'kelas' => 'A'],
+            ['nim' => '110004', 'nama' => 'Dedi Harahap', 'prodi' => 'Teknik Informatika', 'kelas' => 'A'],
+            
+            // Teknik Informatika - Kelas B
+            ['nim' => '110005', 'nama' => 'Eka Putri', 'prodi' => 'Teknik Informatika', 'kelas' => 'B'],
+            ['nim' => '110006', 'nama' => 'Faisal Rahman', 'prodi' => 'Teknik Informatika', 'kelas' => 'B'],
+            ['nim' => '110007', 'nama' => 'Gita Sari', 'prodi' => 'Teknik Informatika', 'kelas' => 'B'],
+            ['nim' => '110008', 'nama' => 'Hendra Wijaya', 'prodi' => 'Teknik Informatika', 'kelas' => 'B'],
+            
+            // Teknik Informatika - Kelas C
+            ['nim' => '110009', 'nama' => 'Intan Kusuma', 'prodi' => 'Teknik Informatika', 'kelas' => 'C'],
+            ['nim' => '110010', 'nama' => 'Joko Supriyanto', 'prodi' => 'Teknik Informatika', 'kelas' => 'C'],
+            ['nim' => '110011', 'nama' => 'Kasino Nurdin', 'prodi' => 'Teknik Informatika', 'kelas' => 'C'],
+            ['nim' => '110012', 'nama' => 'Laila Handoko', 'prodi' => 'Teknik Informatika', 'kelas' => 'C'],
+            
+            // Teknologi Rekayasa Multimedia - Kelas A
+            ['nim' => '120001', 'nama' => 'Miko Salsabila', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'A'],
+            ['nim' => '120002', 'nama' => 'Nina Mandala', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'A'],
+            ['nim' => '120003', 'nama' => 'Oscar Hermawan', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'A'],
+            ['nim' => '120004', 'nama' => 'Padmi Susanti', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'A'],
+            
+            // Teknologi Rekayasa Multimedia - Kelas B
+            ['nim' => '120005', 'nama' => 'Qori Suganda', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'B'],
+            ['nim' => '120006', 'nama' => 'Rini Hayati', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'B'],
+            ['nim' => '120007', 'nama' => 'Sandi Abdullah', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'B'],
+            ['nim' => '120008', 'nama' => 'Tina Saputra', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'B'],
+            
+            // Teknologi Rekayasa Multimedia - Kelas C
+            ['nim' => '120009', 'nama' => 'Udin Permana', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'C'],
+            ['nim' => '120010', 'nama' => 'Vina Wulandari', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'C'],
+            ['nim' => '120011', 'nama' => 'Wahyu Setiawan', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'C'],
+            ['nim' => '120012', 'nama' => 'Xenya Lestari', 'prodi' => 'Teknologi Rekayasa Multimedia', 'kelas' => 'C'],
+            
+            // Teknologi Rekayasa Komputer Jaringan - Kelas A
+            ['nim' => '130001', 'nama' => 'Yuni Hidayat', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'A'],
+            ['nim' => '130002', 'nama' => 'Zaki Anggraeni', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'A'],
+            ['nim' => '130003', 'nama' => 'Ahmad Firmansyah', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'A'],
+            ['nim' => '130004', 'nama' => 'Bella Maharani', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'A'],
+            
+            // Teknologi Rekayasa Komputer Jaringan - Kelas B
+            ['nim' => '130005', 'nama' => 'Candra Ramadhan', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'B'],
+            ['nim' => '130006', 'nama' => 'Dian Nurhaliza', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'B'],
+            ['nim' => '130007', 'nama' => 'Evan Pratama', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'B'],
+            ['nim' => '130008', 'nama' => 'Fitri Santoso', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'B'],
+            
+            // Teknologi Rekayasa Komputer Jaringan - Kelas C
+            ['nim' => '130009', 'nama' => 'Gilang Dewi', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'C'],
+            ['nim' => '130010', 'nama' => 'Hani Harahap', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'C'],
+            ['nim' => '130011', 'nama' => 'Irfan Putri', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'C'],
+            ['nim' => '130012', 'nama' => 'Julia Rahman', 'prodi' => 'Teknologi Rekayasa Komputer Jaringan', 'kelas' => 'C'],
         ];
-        
-        $angkatanList = [2022, 2023, 2024, 2025];
-        $kelasList = ['A', 'B', 'C'];
-        
-        $counter = 1;
-        $nimCounter = 1;
-        
-        foreach ($angkatanList as $angkatan) {
-            foreach ($prodiList as $prodiName => $prodiCode) {
-                // Tentukan jumlah mahasiswa per prodi per angkatan (sekitar 8-9)
-                $jumlahPerProdiAngkatan = 8;
-                
-                for ($i = 1; $i <= $jumlahPerProdiAngkatan; $i++) {
-                    if ($counter > 100) break 3; // Stop jika sudah 100
-                    
-                    // NIM format: angkatan (2 digit) + kode prodi (2 digit) + nomor urut (4 digit)
-                    // Contoh: 22110001 = angkatan 2022, prodi 11, nomor 0001
-                    $nim = sprintf('%02d%02d%04d', $angkatan % 100, $prodiCode, $nimCounter);
-                    
-                    $namaDepanPilih = $namaDepan[array_rand($namaDepan)];
-                    $namaBelakangPilih = $namaBelakang[array_rand($namaBelakang)];
-                    $nama = $namaDepanPilih . ' ' . $namaBelakangPilih;
-                    $kelas = $kelasList[($i - 1) % count($kelasList)]; // Distribusi merata A, B, C
-                    
-                    $mahasiswas[] = [
-                        'nim' => $nim,
-                        'nama' => $nama,
-                        'nama_depan' => $namaDepanPilih,
-                        'nama_belakang' => $namaBelakangPilih,
-                        'prodi' => $prodiName,
-                        'angkatan' => $angkatan,
-                        'kelas_name' => $kelas
-                    ];
-                    
-                    $counter++;
-                    $nimCounter++;
-                }
-            }
-        }
 
         foreach ($mahasiswas as $data) {
-            // Email format: namadepan.namabelakang@student.ac.id
-            $email = strtolower($data['nama_depan']) . '.' . strtolower($data['nama_belakang']) . '@student.ac.id';
-            $kelas_name = $data['kelas_name'];
-            unset($data['kelas_name']);
-            unset($data['nama_depan']);
-            unset($data['nama_belakang']);
+            // Email format: nama.lengkap@student.ac.id
+            $emailName = strtolower(str_replace(' ', '.', $data['nama']));
+            $email = $emailName . '@student.ac.id';
 
-            // Cek apakah user sudah ada
+            // Buat user
             $user = User::firstOrCreate(
                 ['email' => $email],
                 [
@@ -88,38 +84,35 @@ class MahasiswaSeeder extends Seeder
                 ]
             );
 
-            // Cari kelas berdasarkan nama_kelas, prodi, dan angkatan
-            $kelas = Kelas::where('nama_kelas', $kelas_name)
+            // Cari kelas berdasarkan nama_kelas dan prodi (tanpa angkatan)
+            $kelas = Kelas::where('nama_kelas', $data['kelas'])
                 ->where('prodi', $data['prodi'])
-                ->where('angkatan', $data['angkatan'])
                 ->first();
 
-            // Cek apakah mahasiswa sudah ada
+            // Buat mahasiswa
             Mahasiswa::firstOrCreate(
                 ['nim' => $data['nim']],
                 [
                     'user_id' => $user->id,
                     'prodi' => $data['prodi'],
-                    'angkatan' => $data['angkatan'],
                     'kelas_id' => $kelas->id ?? null,
                 ]
             );
         }
 
-        // Tambahkan mahasiswa khusus: Fathur
+        // Mahasiswa khusus: Fathur (untuk testing - KRS kosong)
         $fathurEmail = 'fathur@student.ac.id';
         $fathurUser = User::firstOrCreate(
             ['email' => $fathurEmail],
             [
                 'name' => 'Fathur',
-                'password' => Hash::make('202020'), // Password = NIM
+                'password' => Hash::make('202020'),
                 'role' => 'mahasiswa',
             ]
         );
 
         $fathurKelas = Kelas::where('nama_kelas', 'C')
             ->where('prodi', 'Teknik Informatika')
-            ->where('angkatan', 2024)
             ->first();
 
         Mahasiswa::firstOrCreate(
@@ -127,13 +120,12 @@ class MahasiswaSeeder extends Seeder
             [
                 'user_id' => $fathurUser->id,
                 'prodi' => 'Teknik Informatika',
-                'angkatan' => 2024,
                 'kelas_id' => $fathurKelas->id ?? null,
             ]
         );
 
         $this->command->info("✅ Total " . (count($mahasiswas) + 1) . " mahasiswa berhasil dibuat!");
-        $this->command->info("👤 Mahasiswa khusus: Fathur (NIM: 202020, TI 2024 C) - KRS kosong");
+        $this->command->info("👤 Mahasiswa khusus: Fathur (NIM: 202020, TI C) - KRS kosong");
         
         // Hitung per prodi
         $tiCount = count(array_filter($mahasiswas, fn($m) => $m['prodi'] === 'Teknik Informatika'));
@@ -141,8 +133,8 @@ class MahasiswaSeeder extends Seeder
         $trkjCount = count(array_filter($mahasiswas, fn($m) => $m['prodi'] === 'Teknologi Rekayasa Komputer Jaringan'));
         
         $this->command->info("📊 Rincian:");
-        $this->command->info("   • Teknik Informatika: {$tiCount} mahasiswa");
-        $this->command->info("   • Teknologi Rekayasa Multimedia: {$trmmCount} mahasiswa");
-        $this->command->info("   • Teknologi Rekayasa Komputer Jaringan: {$trkjCount} mahasiswa");
+        $this->command->info("   • Teknik Informatika: {$tiCount} mahasiswa (3 kelas)");
+        $this->command->info("   • Teknologi Rekayasa Multimedia: {$trmmCount} mahasiswa (3 kelas)");
+        $this->command->info("   • Teknologi Rekayasa Komputer Jaringan: {$trkjCount} mahasiswa (3 kelas)");
     }
 }
