@@ -25,12 +25,6 @@
                         'route' => 'dosen.nilai',
                     ],
                     [
-                        'id' => 'input-nilai-tabel',
-                        'label' => 'Input Nilai (Tabel)',
-                        'icon' => 'table',
-                        'route' => 'dosen.nilai.table',
-                    ],
-                    [
                         'id' => 'daftar-kelas',
                         'label' => 'Daftar Kelas',
                         'icon' => 'users',

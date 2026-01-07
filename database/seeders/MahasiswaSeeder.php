@@ -12,50 +12,71 @@ class MahasiswaSeeder extends Seeder
 {
     public function run()
     {
-
-        // Data mahasiswa dengan NIM unik dan terstruktur - Total 26 mahasiswa
-        $mahasiswas = [
-            // Angkatan 2025 - Teknik Informatika
-            ['nim' => 'TI2025001', 'nama' => 'Andi Pratama', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kelas_name' => 'A'],
-            ['nim' => 'TI2025002', 'nama' => 'Budi Santoso', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kelas_name' => 'A'],
-            ['nim' => 'TI2025003', 'nama' => 'Citra Dewi', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kelas_name' => 'A'],
-            ['nim' => 'TI2025004', 'nama' => 'Dedi Harahap', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kelas_name' => 'B'],
-            ['nim' => 'TI2025005', 'nama' => 'Eka Putri', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kelas_name' => 'B'],
-            ['nim' => 'TI2025006', 'nama' => 'Faisal Rahman', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kelas_name' => 'B'],
-            ['nim' => 'TI2025007', 'nama' => 'Gita Sari', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kelas_name' => 'C'],
-            ['nim' => 'TI2025008', 'nama' => 'Hendra Wijaya', 'prodi' => 'Teknik Informatika', 'angkatan' => 2025, 'kelas_name' => 'C'],
-            
-            // Angkatan 2024 - Teknik Informatika
-            ['nim' => 'TI2024001', 'nama' => 'Intan Kusuma', 'prodi' => 'Teknik Informatika', 'angkatan' => 2024, 'kelas_name' => 'A'],
-            ['nim' => 'TI2024002', 'nama' => 'Joko Supriyanto', 'prodi' => 'Teknik Informatika', 'angkatan' => 2024, 'kelas_name' => 'A'],
-            ['nim' => 'TI2024003', 'nama' => 'Kasino Wijaya', 'prodi' => 'Teknik Informatika', 'angkatan' => 2024, 'kelas_name' => 'B'],
-            ['nim' => 'TI2024004', 'nama' => 'Laila Nurdin', 'prodi' => 'Teknik Informatika', 'angkatan' => 2024, 'kelas_name' => 'B'],
-            
-            // Angkatan 2024 - Teknologi Rekayasa Multimedia
-            ['nim' => 'TRMM2024001', 'nama' => 'Miko Handoko', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kelas_name' => 'A'],
-            ['nim' => 'TRMM2024002', 'nama' => 'Nina Salsabila', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kelas_name' => 'A'],
-            ['nim' => 'TRMM2024003', 'nama' => 'Oscar Mandala', 'prodi' => 'Teknologi Rekayasa Multimedia', 'angkatan' => 2024, 'kelas_name' => 'B'],
-            
-            // Angkatan 2023 - Teknologi Rekayasa Jaringan Komputer
-            ['nim' => 'TRKJ2023001', 'nama' => 'Padmi Wijaya', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'A'],
-            ['nim' => 'TRKJ2023002', 'nama' => 'Qori Pratama', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'A'],
-            ['nim' => 'TRKJ2023003', 'nama' => 'Rini Kusuma', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'B'],
-            ['nim' => 'TRKJ2023004', 'nama' => 'Sandi Hermawan', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'B'],
-            
-            // Tambahan untuk reach 26
-            ['nim' => 'TI2023001', 'nama' => 'Tina Susanti', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kelas_name' => 'A'],
-            ['nim' => 'TI2023002', 'nama' => 'Udin Suganda', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kelas_name' => 'A'],
-            ['nim' => 'TI2023003', 'nama' => 'Vina Kusuma', 'prodi' => 'Teknik Informatika', 'angkatan' => 2023, 'kelas_name' => 'B'],
-            ['nim' => 'TRKJ2023005', 'nama' => 'Wahyu Santoso', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'A'],
-            ['nim' => 'TRKJ2023006', 'nama' => 'Xenya Kusuma', 'prodi' => 'Teknologi Rekayasa Jaringan Komputer', 'angkatan' => 2023, 'kelas_name' => 'B'],
-            ['nim' => 'TI2022001', 'nama' => 'Yuni Hayati', 'prodi' => 'Teknik Informatika', 'angkatan' => 2022, 'kelas_name' => 'A'],
-            ['nim' => 'TI2022002', 'nama' => 'Zaki Rahman', 'prodi' => 'Teknik Informatika', 'angkatan' => 2022, 'kelas_name' => 'B'],
+        // Generate 100 mahasiswa
+        $mahasiswas = [];
+        
+        // Daftar nama untuk randomisasi
+        $namaDepan = ['Andi', 'Budi', 'Citra', 'Dedi', 'Eka', 'Faisal', 'Gita', 'Hendra', 'Intan', 'Joko', 
+                      'Kasino', 'Laila', 'Miko', 'Nina', 'Oscar', 'Padmi', 'Qori', 'Rini', 'Sandi', 'Tina',
+                      'Udin', 'Vina', 'Wahyu', 'Xenya', 'Yuni', 'Zaki', 'Ahmad', 'Bella', 'Candra', 'Dian',
+                      'Evan', 'Fitri', 'Gilang', 'Hani', 'Irfan', 'Julia', 'Kevin', 'Luna', 'Maya', 'Nanda'];
+        
+        $namaBelakang = ['Pratama', 'Santoso', 'Dewi', 'Harahap', 'Putri', 'Rahman', 'Sari', 'Wijaya', 'Kusuma', 'Supriyanto',
+                         'Nurdin', 'Handoko', 'Salsabila', 'Mandala', 'Hermawan', 'Susanti', 'Suganda', 'Hayati', 'Abdullah', 'Saputra',
+                         'Permana', 'Wulandari', 'Setiawan', 'Lestari', 'Hidayat', 'Anggraeni', 'Firmansyah', 'Maharani', 'Ramadhan', 'Nurhaliza'];
+        
+        $prodiList = [
+            'Teknik Informatika' => 11, // Kode prodi: 11
+            'Teknologi Rekayasa Multimedia' => 12, // Kode prodi: 12
+            'Teknologi Rekayasa Komputer Jaringan' => 13, // Kode prodi: 13
         ];
+        
+        $angkatanList = [2022, 2023, 2024, 2025];
+        $kelasList = ['A', 'B', 'C'];
+        
+        $counter = 1;
+        $nimCounter = 1;
+        
+        foreach ($angkatanList as $angkatan) {
+            foreach ($prodiList as $prodiName => $prodiCode) {
+                // Tentukan jumlah mahasiswa per prodi per angkatan (sekitar 8-9)
+                $jumlahPerProdiAngkatan = 8;
+                
+                for ($i = 1; $i <= $jumlahPerProdiAngkatan; $i++) {
+                    if ($counter > 100) break 3; // Stop jika sudah 100
+                    
+                    // NIM format: angkatan (2 digit) + kode prodi (2 digit) + nomor urut (4 digit)
+                    // Contoh: 22110001 = angkatan 2022, prodi 11, nomor 0001
+                    $nim = sprintf('%02d%02d%04d', $angkatan % 100, $prodiCode, $nimCounter);
+                    
+                    $namaDepanPilih = $namaDepan[array_rand($namaDepan)];
+                    $namaBelakangPilih = $namaBelakang[array_rand($namaBelakang)];
+                    $nama = $namaDepanPilih . ' ' . $namaBelakangPilih;
+                    $kelas = $kelasList[($i - 1) % count($kelasList)]; // Distribusi merata A, B, C
+                    
+                    $mahasiswas[] = [
+                        'nim' => $nim,
+                        'nama' => $nama,
+                        'nama_depan' => $namaDepanPilih,
+                        'nama_belakang' => $namaBelakangPilih,
+                        'prodi' => $prodiName,
+                        'angkatan' => $angkatan,
+                        'kelas_name' => $kelas
+                    ];
+                    
+                    $counter++;
+                    $nimCounter++;
+                }
+            }
+        }
 
         foreach ($mahasiswas as $data) {
-            $email = strtolower(str_replace(' ', '.', $data['nama'])) . '@student.ac.id';
+            // Email format: namadepan.namabelakang@student.ac.id
+            $email = strtolower($data['nama_depan']) . '.' . strtolower($data['nama_belakang']) . '@student.ac.id';
             $kelas_name = $data['kelas_name'];
             unset($data['kelas_name']);
+            unset($data['nama_depan']);
+            unset($data['nama_belakang']);
 
             // Cek apakah user sudah ada
             $user = User::firstOrCreate(
@@ -85,10 +106,43 @@ class MahasiswaSeeder extends Seeder
             );
         }
 
-        $this->command->info("✅ Total " . count($mahasiswas) . " mahasiswa berhasil dibuat!");
+        // Tambahkan mahasiswa khusus: Fathur
+        $fathurEmail = 'fathur@student.ac.id';
+        $fathurUser = User::firstOrCreate(
+            ['email' => $fathurEmail],
+            [
+                'name' => 'Fathur',
+                'password' => Hash::make('202020'), // Password = NIM
+                'role' => 'mahasiswa',
+            ]
+        );
+
+        $fathurKelas = Kelas::where('nama_kelas', 'C')
+            ->where('prodi', 'Teknik Informatika')
+            ->where('angkatan', 2024)
+            ->first();
+
+        Mahasiswa::firstOrCreate(
+            ['nim' => '202020'],
+            [
+                'user_id' => $fathurUser->id,
+                'prodi' => 'Teknik Informatika',
+                'angkatan' => 2024,
+                'kelas_id' => $fathurKelas->id ?? null,
+            ]
+        );
+
+        $this->command->info("✅ Total " . (count($mahasiswas) + 1) . " mahasiswa berhasil dibuat!");
+        $this->command->info("👤 Mahasiswa khusus: Fathur (NIM: 202020, TI 2024 C) - KRS kosong");
+        
+        // Hitung per prodi
+        $tiCount = count(array_filter($mahasiswas, fn($m) => $m['prodi'] === 'Teknik Informatika'));
+        $trmmCount = count(array_filter($mahasiswas, fn($m) => $m['prodi'] === 'Teknologi Rekayasa Multimedia'));
+        $trkjCount = count(array_filter($mahasiswas, fn($m) => $m['prodi'] === 'Teknologi Rekayasa Komputer Jaringan'));
+        
         $this->command->info("📊 Rincian:");
-        $this->command->info("   • Teknik Informatika: 13 mahasiswa");
-        $this->command->info("   • Teknologi Rekayasa Multimedia: 3 mahasiswa");
-        $this->command->info("   • Teknologi Rekayasa Jaringan Komputer: 10 mahasiswa");
+        $this->command->info("   • Teknik Informatika: {$tiCount} mahasiswa");
+        $this->command->info("   • Teknologi Rekayasa Multimedia: {$trmmCount} mahasiswa");
+        $this->command->info("   • Teknologi Rekayasa Komputer Jaringan: {$trkjCount} mahasiswa");
     }
 }

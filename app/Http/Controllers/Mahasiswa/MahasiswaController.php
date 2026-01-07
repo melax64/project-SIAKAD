@@ -100,11 +100,26 @@ class MahasiswaController extends Controller
         $user = Auth::user();
         $mahasiswa = Mahasiswa::where('user_id', $user->id)->first();
 
-        // Ambil semua mata kuliah yang tersedia
-        $mataKuliahs = MataKuliah::orderBy('nama_matakuliah')->get();
+        // Tentukan prefix kode mata kuliah berdasarkan prodi
+        $prodiPrefix = '';
+        if ($mahasiswa->prodi === 'Teknik Informatika') {
+            $prodiPrefix = 'TI';
+        } elseif ($mahasiswa->prodi === 'Teknologi Rekayasa Multimedia') {
+            $prodiPrefix = 'MM';
+        } elseif ($mahasiswa->prodi === 'Teknologi Rekayasa Komputer Jaringan') {
+            $prodiPrefix = 'KJ';
+        }
+
+        // Ambil mata kuliah yang sesuai (UMUM + prodi mahasiswa)
+        $mataKuliahs = MataKuliah::where(function($query) use ($prodiPrefix) {
+            $query->where('kode_matakuliah', 'LIKE', 'UMUM%')  // Mata kuliah umum
+                  ->orWhere('kode_matakuliah', 'LIKE', $prodiPrefix . '%'); // Mata kuliah prodi
+        })
+        ->orderBy('kode_matakuliah')
+        ->get();
 
         // Ambil mata kuliah yang sudah dipilih mahasiswa semester ini
-        $currentSemester = '2024/2025 Genap'; // Bisa disesuaikan dengan semester saat ini
+        $currentSemester = '2025/2026 Genap'; // Disesuaikan dengan semester di seeder
         $selectedKRS = MahasiswaMataKuliah::where('mahasiswa_id', $mahasiswa->id)
             ->where('semester', $currentSemester)
             ->where('status', 'aktif')
@@ -157,7 +172,7 @@ class MahasiswaController extends Controller
 
         try {
             DB::transaction(function () use ($mahasiswa, $courseIds) {
-                $currentSemester = '2024/2025 Genap';
+                $currentSemester = '2025/2026 Genap';
 
                 // Hapus KRS yang lama
                 MahasiswaMataKuliah::where('mahasiswa_id', $mahasiswa->id)

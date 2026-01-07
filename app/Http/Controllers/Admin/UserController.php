@@ -102,6 +102,7 @@ class UserController extends Controller
                     if ($mataKuliah) {
                         \App\Models\DosenMataKuliah::create([
                             'dosen_id' => $dosen->id,
+                            'mata_kuliah_id' => $mataKuliah->id,
                             'mata_kuliah' => $mataKuliah->nama_matakuliah,
                             'tipe_kelas' => 'teori',
                             'sks' => $mataKuliah->sks,
@@ -116,13 +117,35 @@ class UserController extends Controller
 
     // --- FUNGSI MENAMPILKAN DATA (INDEX) ---
 
-    public function indexMahasiswa()
+    public function indexMahasiswa(Request $request)
     {
-        // Ambil semua data mahasiswa gabung dengan data user-nya (nama & email)
-        $mahasiswas = \App\Models\Mahasiswa::with('user')->get();
+        // Query mahasiswa dengan filter
+        $query = \App\Models\Mahasiswa::with(['user', 'kelas']);
+
+        // Filter by prodi
+        if ($request->filled('prodi')) {
+            $query->where('prodi', $request->prodi);
+        }
+
+        // Filter by angkatan
+        if ($request->filled('angkatan')) {
+            $query->where('angkatan', $request->angkatan);
+        }
+
+        // Filter by kelas
+        if ($request->filled('kelas')) {
+            $query->where('kelas_id', $request->kelas);
+        }
+
+        $mahasiswas = $query->orderBy('prodi')->orderBy('angkatan')->get();
+
+        // Get unique values for filter dropdowns
+        $allProdi = \App\Models\Mahasiswa::select('prodi')->distinct()->pluck('prodi');
+        $allAngkatan = \App\Models\Mahasiswa::select('angkatan')->distinct()->orderByDesc('angkatan')->pluck('angkatan');
+        $allKelas = \App\Models\Kelas::orderBy('nama_kelas')->get();
 
         // Kirim data ke view index
-        return view('admin.mahasiswa.index', compact('mahasiswas'), ['activePage' => 'data-mahasiswa']);
+        return view('admin.mahasiswa.index', compact('mahasiswas', 'allProdi', 'allAngkatan', 'allKelas'), ['activePage' => 'data-mahasiswa']);
     }
 
     public function indexDosen()
@@ -147,6 +170,68 @@ class UserController extends Controller
 
         return redirect()->route('admin.mahasiswa')
             ->with('success', 'Mahasiswa berhasil dihapus!');
+    }
+
+    // --- EDIT DOSEN ---
+    public function editDosen($id)
+    {
+        $dosen = Dosen::with(['user', 'mataKuliahs'])->findOrFail($id);
+        $mataKuliahs = \App\Models\MataKuliah::all();
+        
+        // Get IDs of mata kuliah yang sudah dipilih
+        $selectedMataKuliahIds = $dosen->mataKuliahs->pluck('id')->toArray();
+        
+        return view('admin.dosen.edit', compact('dosen', 'mataKuliahs', 'selectedMataKuliahIds'));
+    }
+
+    public function updateDosen(Request $request, $id)
+    {
+        $dosen = Dosen::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'nip' => 'required|string|unique:dosens,nip,' . $dosen->id,
+            'email' => 'required|email|unique:users,email,' . $dosen->user_id,
+            'jabatan' => 'required|string',
+            'mata_kuliah_ids' => 'nullable|array',
+            'mata_kuliah_ids.*' => 'exists:mata_kuliahs,id'
+        ]);
+
+        DB::transaction(function () use ($request, $dosen) {
+            // Update user
+            $user = User::findOrFail($dosen->user_id);
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+            ]);
+
+            // Update dosen
+            $dosen->update([
+                'nip' => $request->nip,
+                'jabatan' => $request->jabatan,
+            ]);
+
+            // Update mata kuliah yang diampu
+            // Hapus semua mata kuliah lama
+            \App\Models\DosenMataKuliah::where('dosen_id', $dosen->id)->delete();
+            
+            // Tambahkan mata kuliah baru
+            if ($request->has('mata_kuliah_ids')) {
+                foreach ($request->mata_kuliah_ids as $mataKuliahId) {
+                    $mataKuliah = \App\Models\MataKuliah::find($mataKuliahId);
+                    \App\Models\DosenMataKuliah::create([
+                        'dosen_id' => $dosen->id,
+                        'mata_kuliah_id' => $mataKuliahId,
+                        'mata_kuliah' => $mataKuliah->nama_matakuliah,
+                        'tipe_kelas' => 'teori',
+                        'sks' => $mataKuliah->sks,
+                    ]);
+                }
+            }
+        });
+
+        return redirect()->route('admin.dosen')
+            ->with('success', 'Data dosen berhasil diupdate!');
     }
 
     // --- DELETE DOSEN ---
