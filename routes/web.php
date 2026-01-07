@@ -125,7 +125,10 @@ Route::prefix('dosen')->middleware(['auth', 'role:dosen'])->group(function () {
         ]);
     })->name('dosen.dashboard');
 
-    // Routes untuk Input Nilai (Excel)
+    // Routes untuk Input Nilai (Tugas, UTS, UAS)
+    Route::get('/nilai/tugas', [DosenController::class, 'showInputNilaiTugas'])->name('dosen.nilai.tugas');
+    Route::get('/nilai/uts', [DosenController::class, 'showInputNilaiUts'])->name('dosen.nilai.uts');
+    Route::get('/nilai/uas', [DosenController::class, 'showInputNilaiUas'])->name('dosen.nilai.uas');
     Route::get('/nilai', [DosenController::class, 'showInputNilai'])->name('dosen.nilai');
     Route::get('/bimbingan', fn() => 'Halaman Bimbingan')->name('dosen.bimbingan');
     Route::get('/kelas', [DosenController::class, 'showKelas'])->name('dosen.kelas');

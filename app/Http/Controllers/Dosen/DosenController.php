@@ -215,6 +215,26 @@ class DosenController extends Controller
     // Menampilkan halaman input nilai
     public function showInputNilai()
     {
+        return $this->showInputNilaiByType('uas');
+    }
+
+    public function showInputNilaiTugas()
+    {
+        return $this->showInputNilaiByType('tugas');
+    }
+
+    public function showInputNilaiUts()
+    {
+        return $this->showInputNilaiByType('uts');
+    }
+
+    public function showInputNilaiUas()
+    {
+        return $this->showInputNilaiByType('uas');
+    }
+
+    private function showInputNilaiByType($type = 'uas')
+    {
         $user = Auth::user();
         $dosen = Dosen::where('user_id', $user->id)->first();
 
@@ -264,6 +284,7 @@ class DosenController extends Controller
             'allKelas' => $allKelas,
             'allMataKuliah' => $allMataKuliah,
             'activePage' => 'input-nilai',
+            'type' => $type, // tugas, uts, uas
         ]);
     }
 
@@ -308,8 +329,11 @@ class DosenController extends Controller
                             'name' => $mahasiswa->user->name ?? '-',
                         ],
                         'kelas' => $mahasiswa->kelas->nama_kelas ?? '-',
-                        'nilai_angka' => $nilai ? $nilai->nilai_angka : null,
-                        'nilai_huruf' => $nilai ? $nilai->nilai_huruf : null,
+                        'nilai_angka' => $nilai->nilai_angka ?? null,
+                        'nilai_huruf' => $nilai->nilai_huruf ?? null,
+                        'tugas1' => $nilai->tugas1 ?? null,
+                        'tugas2' => $nilai->tugas2 ?? null,
+                        'tugas3' => $nilai->tugas3 ?? null,
                     ];
                 });
 
@@ -318,7 +342,6 @@ class DosenController extends Controller
                 'kelas' => [
                     'nama_kelas' => $kelas->nama_kelas,
                     'prodi' => $kelas->prodi,
-                    'angkatan' => $kelas->angkatan,
                 ],
                 'mahasiswa' => $mahasiswas,
             ]);
@@ -443,19 +466,50 @@ class DosenController extends Controller
                     continue; // Skip if not found
                 }
 
-                // Hitung nilai akhir dari nilai_angka
-                // Asumsi nilai_angka adalah nilai akhir (bisa disesuaikan)
+                $updateData = [];
+                
+                // Check type and update accordingly
+                if (isset($item['type'])) {
+                    if ($item['type'] === 'tugas') {
+                        // Update tugas columns
+                        if (isset($item['tugas1'])) $updateData['tugas1'] = $item['tugas1'];
+                        if (isset($item['tugas2'])) $updateData['tugas2'] = $item['tugas2'];
+                        if (isset($item['tugas3'])) $updateData['tugas3'] = $item['tugas3'];
+                        
+                        // Calculate average if all tugas filled
+                        $tugasValues = array_filter([
+                            $item['tugas1'] ?? null,
+                            $item['tugas2'] ?? null,
+                            $item['tugas3'] ?? null
+                        ], fn($v) => $v !== null);
+                        
+                        if (!empty($tugasValues)) {
+                            $updateData['tugas'] = array_sum($tugasValues) / count($tugasValues);
+                        }
+                    } elseif ($item['type'] === 'uts') {
+                        // Update UTS
+                        $updateData['uts'] = $item['nilai_angka'];
+                    } elseif ($item['type'] === 'uas') {
+                        // Update UAS
+                        $updateData['uas'] = $item['nilai_angka'];
+                        $updateData['nilai_angka'] = $item['nilai_angka'];
+                        $updateData['nilai_huruf'] = $item['nilai_huruf'];
+                    }
+                } else {
+                    // Legacy support: assume UAS
+                    $updateData['nilai_angka'] = $item['nilai_angka'];
+                    $updateData['nilai_huruf'] = $item['nilai_huruf'];
+                    $updateData['uas'] = $item['nilai_angka'];
+                }
+
+                // Update or create nilai
                 $nilaiModel = Nilai::updateOrCreate(
                     [
                         'mahasiswa_id' => $item['mahasiswa_id'],
                         'dosen_id' => $dosen->id,
                         'mata_kuliah' => $dosenMataKuliah->mata_kuliah, // Use mata_kuliah name
                     ],
-                    [
-                        'nilai_angka' => $item['nilai_angka'],
-                        'nilai_huruf' => $item['nilai_huruf'],
-                        'uas' => $item['nilai_angka'], // Simpan nilai ke UAS juga (bisa disesuaikan)
-                    ]
+                    $updateData
                 );
             }
 

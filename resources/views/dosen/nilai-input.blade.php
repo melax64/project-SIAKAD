@@ -7,8 +7,42 @@
         <!-- Header -->
         <div
             class="bg-gradient-to-r from-blue-600 to-blue-800 dark:from-blue-900 dark:to-blue-950 p-8 rounded-xl shadow-md text-white">
-            <h1 class="text-3xl font-bold">Input Nilai Mahasiswa</h1>
-            <p class="text-blue-200 mt-2">Masukkan nilai mahasiswa dengan format Excel</p>
+            <h1 class="text-3xl font-bold">
+                Input Nilai 
+                @if($type === 'tugas')
+                    Tugas
+                @elseif($type === 'uts')
+                    UTS
+                @else
+                    UAS
+                @endif
+            </h1>
+            <p class="text-blue-200 mt-2">
+                Masukkan nilai 
+                @if($type === 'tugas')
+                    tugas mahasiswa (Tugas 1, 2, 3)
+                @elseif($type === 'uts')
+                    UTS mahasiswa
+                @else
+                    UAS mahasiswa
+                @endif
+            </p>
+            
+            <!-- Navigation Tabs -->
+            <div class="flex gap-2 mt-4">
+                <a href="{{ route('dosen.nilai.tugas') }}" 
+                   class="px-4 py-2 rounded-lg transition {{ $type === 'tugas' ? 'bg-white text-blue-600 font-semibold' : 'bg-blue-700 text-white hover:bg-blue-600' }}">
+                    Tugas
+                </a>
+                <a href="{{ route('dosen.nilai.uts') }}" 
+                   class="px-4 py-2 rounded-lg transition {{ $type === 'uts' ? 'bg-white text-blue-600 font-semibold' : 'bg-blue-700 text-white hover:bg-blue-600' }}">
+                    UTS
+                </a>
+                <a href="{{ route('dosen.nilai.uas') }}" 
+                   class="px-4 py-2 rounded-lg transition {{ $type === 'uas' ? 'bg-white text-blue-600 font-semibold' : 'bg-blue-700 text-white hover:bg-blue-600' }}">
+                    UAS
+                </a>
+            </div>
         </div>
 
         <!-- Filter Kelas -->
@@ -21,7 +55,7 @@
                         <option value="">-- Pilih Kelas --</option>
                         @forelse($allKelas ?? [] as $kelas)
                             <option value="{{ $kelas->id }}">
-                                {{ $kelas->nama_kelas }} - {{ $kelas->prodi }} {{ $kelas->angkatan }}
+                                {{ $kelas->nama_kelas }} - {{ $kelas->prodi }}
                             </option>
                         @empty
                             <option disabled>Tidak ada kelas</option>
@@ -54,8 +88,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Angkatan</label>
-                    <input type="text" id="angkatanKelas" readonly
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kode Mata Kuliah</label>
+                    <input type="text" id="kodeMataKuliah" readonly
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-gray-400 bg-gray-100"
                         placeholder="Akan otomatis terisi">
                 </div>
@@ -77,15 +111,20 @@
                             <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Nama</th>
                             <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">NIM</th>
                             <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Kelas</th>
-                            <th class="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Nilai (0-100)
-                            </th>
-                            <th class="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Nilai Huruf
-                            </th>
+                            @if($type === 'tugas')
+                                <th class="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Tugas 1 (0-100)</th>
+                                <th class="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Tugas 2 (0-100)</th>
+                                <th class="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Tugas 3 (0-100)</th>
+                                <th class="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Rata-rata</th>
+                            @else
+                                <th class="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Nilai (0-100)</th>
+                                <th class="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">Nilai Huruf</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody id="mahasiswaTable">
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="8" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                                 Pilih kelas dan mata kuliah terlebih dahulu
                             </td>
                         </tr>
@@ -109,6 +148,8 @@
     </div>
 
     <script>
+        const nilaiType = '{{ $type }}'; // tugas, uts, uas
+        
         // Data kelas dari blade
         const kelasData = {!! json_encode(
             ($allKelas ?? collect())->map(function ($kelas) {
@@ -116,7 +157,6 @@
                     'id' => $kelas->id,
                     'nama_kelas' => $kelas->nama_kelas,
                     'prodi' => $kelas->prodi,
-                    'angkatan' => $kelas->angkatan,
                 ];
             }),
         ) !!};
@@ -126,6 +166,7 @@
             ($allMataKuliah ?? collect())->map(function ($mk) {
                 return [
                     'id' => $mk->id,
+                    'kode_matakuliah' => $mk->kode_matakuliah,
                     'nama_matakuliah' => $mk->nama_matakuliah,
                 ];
             }),
@@ -148,25 +189,25 @@
             const table = document.getElementById('mahasiswaTable');
 
             if (!selectedId) {
+                const colspan = nilaiType === 'tugas' ? '8' : '6';
                 table.innerHTML =
-                    '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Pilih kelas dan mata kuliah terlebih dahulu</td></tr>';
+                    `<tr><td colspan="${colspan}" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Pilih kelas dan mata kuliah terlebih dahulu</td></tr>`;
                 document.getElementById('prodiKelas').value = '';
-                document.getElementById('angkatanKelas').value = '';
                 return;
             }
 
-            // Set prodi dan angkatan
+            // Set prodi
             const selected = kelasData.find(k => k.id == selectedId);
             document.getElementById('prodiKelas').value = selected.prodi;
-            document.getElementById('angkatanKelas').value = selected.angkatan;
 
             // Load data jika mata kuliah juga sudah dipilih
             const mataKuliahId = document.getElementById('mataKuliahSelect').value;
             if (mataKuliahId) {
                 loadMahasiswaByKelas(selectedId);
             } else {
+                const colspan = nilaiType === 'tugas' ? '8' : '6';
                 table.innerHTML =
-                    '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Silakan pilih mata kuliah</td></tr>';
+                    `<tr><td colspan="${colspan}" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Silakan pilih mata kuliah</td></tr>`;
             }
         });
 
@@ -181,11 +222,16 @@
                 return;
             }
 
+            // Set kode mata kuliah
             if (mataKuliahId) {
+                const selected = mataKuliahData.find(m => m.id == mataKuliahId);
+                document.getElementById('kodeMataKuliah').value = selected.kode_matakuliah;
                 loadMahasiswaByKelas(kelasId);
             } else {
+                document.getElementById('kodeMataKuliah').value = '';
+                const colspan = nilaiType === 'tugas' ? '8' : '6';
                 document.getElementById('mahasiswaTable').innerHTML =
-                    '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Silakan pilih mata kuliah</td></tr>';
+                    `<tr><td colspan="${colspan}" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Silakan pilih mata kuliah</td></tr>`;
             }
         });
 
@@ -209,47 +255,133 @@
         // Render tabel mahasiswa
         function renderMahasiswaTable(mahasiswas) {
             const table = document.getElementById('mahasiswaTable');
+            const colspan = nilaiType === 'tugas' ? '8' : '6';
 
             if (mahasiswas.length === 0) {
                 table.innerHTML =
-                    '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Tidak ada mahasiswa untuk kelas ini</td></tr>';
+                    `<tr><td colspan="${colspan}" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Tidak ada mahasiswa untuk kelas ini</td></tr>`;
                 return;
             }
 
             let html = '';
             mahasiswas.forEach((mhs, index) => {
-                const nilaiAngka = (mhs.nilai_angka !== null && mhs.nilai_angka !== undefined) ? mhs.nilai_angka : '';
-                const nilaiHuruf = mhs.nilai_huruf || '-';
-                const gradeClass = getNilaiClass(nilaiHuruf);
-                
-                html += `
-                    <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
-                        <td class="px-4 py-3 text-gray-900 dark:text-white font-medium">${index + 1}</td>
-                        <td class="px-4 py-3 text-gray-900 dark:text-white font-medium">${mhs.user.name}</td>
-                        <td class="px-4 py-3 text-gray-900 dark:text-white font-mono">${mhs.nim}</td>
-                        <td class="px-4 py-3 text-gray-900 dark:text-white">${mhs.kelas || '-'}</td>
-                        <td class="px-4 py-3">
-                            <input type="number" 
-                                min="0" 
-                                max="100" 
-                                class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-center font-semibold focus:outline-none focus:border-blue-500 transition"
-                                placeholder="0"
-                                value="${nilaiAngka}"
-                                data-mahasiswa-id="${mhs.id}"
-                                data-index="${index}"
-                                onchange="updateNilaiHuruf(this)"
-                                oninput="updateNilaiHuruf(this)">
-                        </td>
-                        <td class="px-4 py-3 text-center">
-                            <span class="inline-block px-4 py-2 font-bold rounded-lg text-white ${gradeClass} transition"
-                                  id="huruf-${index}">${nilaiHuruf}</span>
-                        </td>
-                    </tr>
-                `;
+                if (nilaiType === 'tugas') {
+                    // Render untuk tugas (3 kolom)
+                    const tugas1 = mhs.tugas1 || '';
+                    const tugas2 = mhs.tugas2 || '';
+                    const tugas3 = mhs.tugas3 || '';
+                    const rataRata = calculateAverage([tugas1, tugas2, tugas3]);
+                    
+                    html += `
+                        <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <td class="px-4 py-3 text-gray-900 dark:text-white font-medium">${index + 1}</td>
+                            <td class="px-4 py-3 text-gray-900 dark:text-white font-medium">${mhs.user.name}</td>
+                            <td class="px-4 py-3 text-gray-900 dark:text-white font-mono">${mhs.nim}</td>
+                            <td class="px-4 py-3 text-gray-900 dark:text-white">${mhs.kelas || '-'}</td>
+                            <td class="px-4 py-3">
+                                <input type="number" 
+                                    min="0" 
+                                    max="100" 
+                                    class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-center font-semibold focus:outline-none focus:border-blue-500 transition"
+                                    placeholder="0"
+                                    value="${tugas1}"
+                                    data-mahasiswa-id="${mhs.id}"
+                                    data-index="${index}"
+                                    data-tugas="1"
+                                    onchange="updateRataRata(${index})"
+                                    oninput="updateRataRata(${index})">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" 
+                                    min="0" 
+                                    max="100" 
+                                    class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-center font-semibold focus:outline-none focus:border-blue-500 transition"
+                                    placeholder="0"
+                                    value="${tugas2}"
+                                    data-mahasiswa-id="${mhs.id}"
+                                    data-index="${index}"
+                                    data-tugas="2"
+                                    onchange="updateRataRata(${index})"
+                                    oninput="updateRataRata(${index})">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" 
+                                    min="0" 
+                                    max="100" 
+                                    class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-center font-semibold focus:outline-none focus:border-blue-500 transition"
+                                    placeholder="0"
+                                    value="${tugas3}"
+                                    data-mahasiswa-id="${mhs.id}"
+                                    data-index="${index}"
+                                    data-tugas="3"
+                                    onchange="updateRataRata(${index})"
+                                    oninput="updateRataRata(${index})">
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="inline-block px-4 py-2 font-bold rounded-lg bg-blue-600 text-white transition"
+                                      id="rata-${index}">${rataRata}</span>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    // Render untuk UTS/UAS (1 kolom)
+                    const nilaiAngka = (mhs.nilai_angka !== null && mhs.nilai_angka !== undefined) ? mhs.nilai_angka : '';
+                    const nilaiHuruf = mhs.nilai_huruf || '-';
+                    const gradeClass = getNilaiClass(nilaiHuruf);
+                    
+                    html += `
+                        <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <td class="px-4 py-3 text-gray-900 dark:text-white font-medium">${index + 1}</td>
+                            <td class="px-4 py-3 text-gray-900 dark:text-white font-medium">${mhs.user.name}</td>
+                            <td class="px-4 py-3 text-gray-900 dark:text-white font-mono">${mhs.nim}</td>
+                            <td class="px-4 py-3 text-gray-900 dark:text-white">${mhs.kelas || '-'}</td>
+                            <td class="px-4 py-3">
+                                <input type="number" 
+                                    min="0" 
+                                    max="100" 
+                                    class="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-white text-center font-semibold focus:outline-none focus:border-blue-500 transition"
+                                    placeholder="0"
+                                    value="${nilaiAngka}"
+                                    data-mahasiswa-id="${mhs.id}"
+                                    data-index="${index}"
+                                    onchange="updateNilaiHuruf(this)"
+                                    oninput="updateNilaiHuruf(this)">
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="inline-block px-4 py-2 font-bold rounded-lg text-white ${gradeClass} transition"
+                                      id="huruf-${index}">${nilaiHuruf}</span>
+                            </td>
+                        </tr>
+                    `;
+                }
             });
 
             table.innerHTML = html;
             lucide.createIcons();
+        }
+
+        // Calculate average for tugas
+        function calculateAverage(values) {
+            const validValues = values.filter(v => v !== '' && !isNaN(v)).map(v => parseFloat(v));
+            if (validValues.length === 0) return '-';
+            const sum = validValues.reduce((a, b) => a + b, 0);
+            return (sum / validValues.length).toFixed(1);
+        }
+
+        // Update rata-rata tugas
+        function updateRataRata(index) {
+            const inputs = document.querySelectorAll(`input[data-index="${index}"]`);
+            const values = Array.from(inputs).map(input => input.value);
+            const rataCell = document.getElementById(`rata-${index}`);
+            const rata = calculateAverage(values);
+
+            if (rataCell) {
+                rataCell.textContent = rata;
+                rataCell.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    rataCell.style.transform = 'scale(1)';
+                }, 200);
+            }
         }
 
         // Update nilai huruf saat input nilai angka berubah (real-time)
@@ -300,21 +432,55 @@
                 return;
             }
 
-            const inputs = document.querySelectorAll('input[data-mahasiswa-id]');
             const nilai = [];
 
-            inputs.forEach(input => {
-                const nilaiAngka = input.value;
-                if (nilaiAngka !== '') {
-                    nilai.push({
-                        mahasiswa_id: input.getAttribute('data-mahasiswa-id'),
-                        kelas_id: kelasId,
-                        mata_kuliah: mataKuliahId,
-                        nilai_angka: parseInt(nilaiAngka),
-                        nilai_huruf: nilaiKeHuruf(nilaiAngka)
-                    });
-                }
-            });
+            if (nilaiType === 'tugas') {
+                // Collect tugas data
+                const inputs = document.querySelectorAll('input[data-mahasiswa-id]');
+                const mahasiswaMap = {};
+
+                inputs.forEach(input => {
+                    const mahasiswaId = input.getAttribute('data-mahasiswa-id');
+                    const tugasNum = input.getAttribute('data-tugas');
+                    const nilai = input.value;
+
+                    if (!mahasiswaMap[mahasiswaId]) {
+                        mahasiswaMap[mahasiswaId] = {
+                            mahasiswa_id: mahasiswaId,
+                            kelas_id: kelasId,
+                            mata_kuliah: mataKuliahId,
+                            type: 'tugas'
+                        };
+                    }
+
+                    if (nilai !== '') {
+                        mahasiswaMap[mahasiswaId][`tugas${tugasNum}`] = parseInt(nilai);
+                    }
+                });
+
+                // Convert to array and filter (at least one tugas filled)
+                Object.values(mahasiswaMap).forEach(item => {
+                    if (item.tugas1 || item.tugas2 || item.tugas3) {
+                        nilai.push(item);
+                    }
+                });
+            } else {
+                // Collect UTS/UAS data
+                const inputs = document.querySelectorAll('input[data-mahasiswa-id]');
+                inputs.forEach(input => {
+                    const nilaiAngka = input.value;
+                    if (nilaiAngka !== '') {
+                        nilai.push({
+                            mahasiswa_id: input.getAttribute('data-mahasiswa-id'),
+                            kelas_id: kelasId,
+                            mata_kuliah: mataKuliahId,
+                            type: nilaiType, // uts or uas
+                            nilai_angka: parseInt(nilaiAngka),
+                            nilai_huruf: nilaiKeHuruf(nilaiAngka)
+                        });
+                    }
+                });
+            }
 
             if (nilai.length === 0) {
                 alert('⚠️ Silahkan isi nilai terlebih dahulu');
@@ -367,9 +533,10 @@
             document.getElementById('kelasSelect').value = '';
             document.getElementById('mataKuliahSelect').value = '';
             document.getElementById('prodiKelas').value = '';
-            document.getElementById('angkatanKelas').value = '';
+            document.getElementById('kodeMataKuliah').value = '';
+            const colspan = nilaiType === 'tugas' ? '8' : '6';
             document.getElementById('mahasiswaTable').innerHTML =
-                '<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Pilih kelas dan mata kuliah terlebih dahulu</td></tr>';
+                `<tr><td colspan="${colspan}" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">Pilih kelas dan mata kuliah terlebih dahulu</td></tr>`;
         }
 
         // Keyboard shortcut: Ctrl+Enter untuk submit
