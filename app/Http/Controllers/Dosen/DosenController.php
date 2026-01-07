@@ -331,6 +331,8 @@ class DosenController extends Controller
                         'kelas' => $mahasiswa->kelas->nama_kelas ?? '-',
                         'nilai_angka' => $nilai->nilai_angka ?? null,
                         'nilai_huruf' => $nilai->nilai_huruf ?? null,
+                        'uts' => $nilai->uts ?? null,
+                        'uas' => $nilai->uas ?? null,
                         'tugas1' => $nilai->tugas1 ?? null,
                         'tugas2' => $nilai->tugas2 ?? null,
                         'tugas3' => $nilai->tugas3 ?? null,

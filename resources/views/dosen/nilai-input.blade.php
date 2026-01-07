@@ -325,8 +325,15 @@
                     `;
                 } else {
                     // Render untuk UTS/UAS (1 kolom)
-                    const nilaiAngka = (mhs.nilai_angka !== null && mhs.nilai_angka !== undefined) ? mhs.nilai_angka : '';
-                    const nilaiHuruf = mhs.nilai_huruf || '-';
+                    // Choose the correct value based on type
+                    let nilaiAngka = '';
+                    if (nilaiType === 'uts') {
+                        nilaiAngka = (mhs.uts !== null && mhs.uts !== undefined) ? mhs.uts : '';
+                    } else { // uas
+                        nilaiAngka = (mhs.uas !== null && mhs.uas !== undefined) ? mhs.uas : '';
+                    }
+                    
+                    const nilaiHuruf = nilaiAngka ? nilaiKeHuruf(nilaiAngka) : '-';
                     const gradeClass = getNilaiClass(nilaiHuruf);
                     
                     html += `
