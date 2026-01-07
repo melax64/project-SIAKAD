@@ -88,27 +88,6 @@
                     @enderror
                 </div>
 
-                <!-- Angkatan -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        Angkatan <span class="text-red-500">*</span>
-                    </label>
-                    <select id="angkatanSelect" name="angkatan"
-                        class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('angkatan') border-red-500 @enderror"
-                        required onchange="updateKelas()">
-                        <option value="">Pilih Angkatan</option>
-                        <option value="2025" {{ old('angkatan') === '2025' ? 'selected' : '' }}>2025</option>
-                        <option value="2024" {{ old('angkatan') === '2024' ? 'selected' : '' }}>2024</option>
-                        <option value="2023" {{ old('angkatan') === '2023' ? 'selected' : '' }}>2023</option>
-                        <option value="2022" {{ old('angkatan') === '2022' ? 'selected' : '' }}>2022</option>
-                        <option value="2021" {{ old('angkatan') === '2021' ? 'selected' : '' }}>2021</option>
-                        <option value="2020" {{ old('angkatan') === '2020' ? 'selected' : '' }}>2020</option>
-                    </select>
-                    @error('angkatan')
-                        <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
-                    @enderror
-                </div>
-
                 <!-- Kelas -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -117,7 +96,7 @@
                     <select id="kelasSelect" name="kelas_id"
                         class="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition @error('kelas_id') border-red-500 @enderror"
                         required>
-                        <option value="">Pilih Kelas (Pilih Prodi dan Angkatan terlebih dahulu)</option>
+                        <option value="">Pilih Kelas (Pilih Prodi terlebih dahulu)</option>
                     </select>
                     @error('kelas_id')
                         <span class="text-red-600 text-sm mt-1 block">{{ $message }}</span>
@@ -150,29 +129,26 @@
     </div>
 
     <script>
-        // Update kelas dropdown based on prodi and angkatan
+        // Update kelas dropdown based on prodi only
         document.getElementById('prodiSelect').addEventListener('change', updateKelas);
-        document.getElementById('angkatanSelect').addEventListener('change', updateKelas);
 
         async function updateKelas() {
             const prodiSelect = document.getElementById('prodiSelect');
-            const angkatanSelect = document.getElementById('angkatanSelect');
             const kelasSelect = document.getElementById('kelasSelect');
 
             const prodi = prodiSelect.value;
-            const angkatan = angkatanSelect.value;
 
             // Reset kelas dropdown
             kelasSelect.innerHTML = '<option value="">Pilih Kelas</option>';
 
-            if (!prodi || !angkatan) {
-                kelasSelect.innerHTML = '<option value="">Pilih Prodi dan Angkatan terlebih dahulu</option>';
+            if (!prodi) {
+                kelasSelect.innerHTML = '<option value="">Pilih Prodi terlebih dahulu</option>';
                 return;
             }
 
             try {
-                // Fetch kelas dari database berdasarkan prodi dan angkatan
-                const response = await fetch(`/api/kelas?prodi=${encodeURIComponent(prodi)}&angkatan=${angkatan}`);
+                // Fetch kelas dari database berdasarkan prodi
+                const response = await fetch(`/api/kelas?prodi=${encodeURIComponent(prodi)}`);
                 const data = await response.json();
 
                 if (data.success && data.kelas.length > 0) {
@@ -183,7 +159,7 @@
                         kelasSelect.appendChild(option);
                     });
                 } else {
-                    kelasSelect.innerHTML = '<option value="">Tidak ada kelas untuk kombinasi prodi dan angkatan ini</option>';
+                    kelasSelect.innerHTML = '<option value="">Tidak ada kelas untuk prodi ini</option>';
                 }
             } catch (error) {
                 console.error('Error fetching kelas:', error);
@@ -191,9 +167,9 @@
             }
         }
 
-        // Initialize kelas on page load if prodi and angkatan are already set
+        // Initialize kelas on page load if prodi is already set
         window.addEventListener('load', function() {
-            if (document.getElementById('prodiSelect').value && document.getElementById('angkatanSelect').value) {
+            if (document.getElementById('prodiSelect').value) {
                 updateKelas();
             }
         });
