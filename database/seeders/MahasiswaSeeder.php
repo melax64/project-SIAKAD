@@ -100,32 +100,32 @@ class MahasiswaSeeder extends Seeder
             );
         }
 
-        // Mahasiswa khusus: Fathur (untuk testing - KRS kosong)
-        $fathurEmail = 'fathur@student.ac.id';
-        $fathurUser = User::firstOrCreate(
-            ['email' => $fathurEmail],
+        // Mahasiswa khusus: maila (untuk testing - KRS kosong)
+        $mailaEmail = 'maila@student.ac.id';
+        $mailaUser = User::firstOrCreate(
+            ['email' => $mailaEmail],
             [
-                'name' => 'Fathur',
+                'name' => 'maila',
                 'password' => Hash::make('202020'),
                 'role' => 'mahasiswa',
             ]
         );
 
-        $fathurKelas = Kelas::where('nama_kelas', 'C')
+        $mailaKelas = Kelas::where('nama_kelas', 'C')
             ->where('prodi', 'Teknik Informatika')
             ->first();
 
         Mahasiswa::firstOrCreate(
             ['nim' => '202020'],
             [
-                'user_id' => $fathurUser->id,
+                'user_id' => $mailaUser->id,
                 'prodi' => 'Teknik Informatika',
-                'kelas_id' => $fathurKelas->id ?? null,
+                'kelas_id' => $mailaKelas->id ?? null,
             ]
         );
 
         $this->command->info("✅ Total " . (count($mahasiswas) + 1) . " mahasiswa berhasil dibuat!");
-        $this->command->info("👤 Mahasiswa khusus: Fathur (NIM: 202020, TI C) - KRS kosong");
+        $this->command->info("👤 Mahasiswa khusus: maila (NIM: 202020, TI C) - KRS kosong");
         
         // Hitung per prodi
         $tiCount = count(array_filter($mahasiswas, fn($m) => $m['prodi'] === 'Teknik Informatika'));
